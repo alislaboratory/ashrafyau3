@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Ali — laboratory</title>
+<meta name="description" content="Med student, engineer, researcher. Building high-performance robotic actuators." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#ffffff; --panel:#f6f6f4; --night:#08080d;
+    --ink:#0e0e0e; --graphite:#34373b; --read:#2b2e31; --mist:#8e9196; --faint:#b8babd;
+    --hairline:#e4e4e1;
+    --display:"Space Mono", ui-monospace, monospace;
+    --mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+    --serif:"Newsreader", Georgia, "Times New Roman", serif;
+    --indigo:#5b6cff; --violet:#7b5cff; --purple:#a15cff; --magenta:#d65cff; --cyan:#4cd6ff;
+    --aurora:linear-gradient(105deg,#5b6cff 0%, #7b5cff 26%, #a15cff 48%, #d65cff 66%, #4cd6ff 100%);
+    --maxw:660px; --wide:840px; --nav-h:58px;
+  }
+  *{box-sizing:border-box}
+  html{ -webkit-text-size-adjust:100%; }
+  body{ margin:0; background:var(--paper); color:var(--graphite);
+    font-family:var(--mono); font-size:15px; line-height:1.75;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; overflow-x:hidden; }
+  a{color:var(--ink); text-decoration:none}
+  ::selection{background:#111; color:#fff}
+
+  .lnk{ color:var(--ink); border-bottom:2px solid transparent;
+    background-image:var(--aurora); background-size:100% 2px; background-repeat:no-repeat;
+    background-position:0 100%; padding-bottom:1px; transition:background-size .18s ease; }
+  .lnk:hover{ background-size:100% 3px; }
+
+  /* nav */
+  .nav{ position:fixed; top:0; left:0; right:0; height:var(--nav-h); z-index:50;
+    display:flex; align-items:center; justify-content:space-between; padding:0 clamp(18px,4vw,40px);
+    background:rgba(255,255,255,.86); backdrop-filter:saturate(150%) blur(8px); border-bottom:1px solid var(--hairline); }
+  .brand{ display:flex; align-items:center; gap:9px; line-height:0; }
+  #logo{ width:40px; height:40px; display:block; cursor:pointer; }
+  .navlinks{ display:flex; align-items:center; gap:clamp(14px,2.4vw,26px); }
+  .navlinks a{ font-family:var(--mono); font-size:12px; letter-spacing:.04em; color:var(--graphite); position:relative; padding:4px 0; transition:color .18s ease; white-space:nowrap; }
+  .navlinks a:hover, .navlinks a.active{ color:var(--ink); }
+  .navlinks a.active::after{ content:""; position:absolute; left:0; right:0; bottom:-2px; height:2px; border-radius:2px; background:var(--aurora); }
+  .nav .soc{ display:flex; gap:13px; padding-left:clamp(6px,1.5vw,16px); border-left:1px solid var(--hairline); margin-left:4px;}
+  .nav .soc a{ font-size:11px; color:var(--mist); letter-spacing:.05em; }
+  .nav .soc a:hover{ color:var(--ink); }
+
+  /* layout */
+  main{ padding-top:var(--nav-h); min-height:100vh; }
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:64px clamp(20px,5vw,28px) 110px; }
+  .wrap.wide{ max-width:var(--wide); }
+  .page-enter{ animation:fade .5s ease both; }
+  @keyframes fade{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
+
+  .eyebrow{ font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--mist); margin:0 0 18px; display:flex; align-items:center; gap:10px;}
+  .eyebrow::before{ content:""; width:22px; height:2px; border-radius:2px; background:var(--aurora); display:inline-block; }
+  h1.title{ font-family:var(--display); font-weight:700; color:var(--ink); font-size:clamp(26px,5vw,40px); line-height:1.12; margin:0 0 10px; letter-spacing:-.01em;}
+  h2{ font-family:var(--display); font-weight:700; color:var(--ink); font-size:20px; margin:46px 0 10px; letter-spacing:-.01em;}
+  p{ margin:0 0 20px; }
+  .lede{ color:var(--ink); font-size:16px; }
+  .hr{ height:1px; background:var(--hairline); border:0; margin:40px 0; }
+  .meta{ font-size:11px; letter-spacing:.05em; color:var(--mist); }
+
+  .prose{ font-family:var(--serif); font-size:18px; line-height:1.72; color:var(--read); }
+  .prose .lede{ font-family:var(--serif); font-size:21px; line-height:1.55; color:var(--ink); font-weight:400; }
+  .prose strong{ font-weight:600; color:var(--ink); } .prose .meta{ font-family:var(--mono); }
+
+  .tags{ display:flex; flex-wrap:wrap; gap:7px; }
+  .tag{ font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--graphite);
+    border:1px solid var(--hairline); border-radius:2px; padding:3px 8px; background:var(--panel); transition:border-color .18s, color .18s;}
+  .postitem:hover .tag{ border-color:#d3d0ec; }
+
+  /* HERO */
+  .hero{ position:relative; height:calc(100vh - var(--nav-h)); min-height:520px; width:100%; background:var(--paper); overflow:hidden; cursor:crosshair; }
+  #fluid{ position:absolute; inset:0; margin:0; padding:0; display:block; width:100%; height:100%; user-select:none; will-change:contents; z-index:0; }
+  .hero-clear{ position:absolute; inset:0; pointer-events:none; z-index:1;
+    background:radial-gradient(40% 44% at 50% 47%, rgba(255,255,255,.95) 0%, rgba(255,255,255,.6) 44%, rgba(255,255,255,0) 76%); }
+  .hero-glow{ position:absolute; left:50%; top:47%; transform:translate(-50%,-50%); pointer-events:none; z-index:1;
+    width:min(80vw,760px); height:min(44vh,400px);
+    background:radial-gradient(closest-side, rgba(255,255,255,.55), rgba(255,255,255,0) 70%);
+    filter:blur(10px); }
+  @keyframes glowpulse{ 0%,100%{opacity:.72; transform:translate(-50%,-50%) scale(1)} 50%{opacity:1; transform:translate(-50%,-50%) scale(1.07)} }
+  .hero-center{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; pointer-events:none; padding:0 20px; z-index:2; }
+  .hero-name{ font-family:var(--display); font-weight:700; line-height:.96; margin:0; font-size:clamp(34px,8.4vw,104px); letter-spacing:-.02em; max-width:14ch;
+    color:#101012;
+    text-shadow:0 1px 0 rgba(255,255,255,.7), 0 3px 8px rgba(0,0,0,.16); }
+  .hero-sub{ font-family:var(--mono); font-size:clamp(12px,1.6vw,14px); color:#23262b; letter-spacing:.04em; margin:18px 0 0; max-width:40ch; text-shadow:0 1px 10px rgba(255,255,255,.9); }
+  .hero-hint{ position:absolute; bottom:22px; left:0; right:0; text-align:center; pointer-events:none; z-index:2; font-size:10.5px; letter-spacing:.22em; text-transform:uppercase; color:#9a9ba0; }
+  .hero-hint .blink{ animation:blink 1.6s steps(1) infinite; color:#5f6266; }
+  @keyframes blink{ 50%{opacity:0} }
+
+  .home-strip{ max-width:var(--wide); margin:0 auto; padding:0 clamp(20px,5vw,28px); }
+  .home-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:0; border-top:1px solid var(--hairline); }
+  .home-grid a{ padding:28px 22px 30px; border-right:1px solid var(--hairline); display:block; transition:background .18s ease; }
+  .home-grid a:last-child{ border-right:0; }
+  .home-grid a:hover{ background:var(--panel); }
+  .home-grid .k{ font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--mist); }
+  .home-grid .v{ font-family:var(--display); color:var(--ink); font-size:18px; margin-top:10px; display:flex; align-items:center; gap:8px;}
+  .home-grid .arr{ color:var(--faint); transition:transform .18s ease, color .18s ease; }
+  .home-grid a:hover .arr{ transform:translateX(4px); color:var(--cyan); }
+  .home-grid p{ font-size:12.5px; color:var(--graphite); margin:10px 0 0; line-height:1.6; }
+
+  /* AQUARIUM */
+  .aquarium{ position:relative; background:#03101d; overflow:hidden; }
+  #aquarium{ display:block; width:100%; height:clamp(320px,46vw,460px); }
+  .aq-cap{ position:absolute; left:clamp(20px,5vw,28px); top:22px; z-index:2; }
+  .aq-cap .eyebrow{ color:#7fd0ff; }
+  .aq-cap .t{ font-family:var(--mono); color:#bfe6ff; font-size:12px; letter-spacing:.03em; text-shadow:0 1px 8px rgba(0,0,0,.6); }
+  .aq-cap .t .dim{ color:#5b8fb0; }
+
+  /* projects */
+  .thermal{ position:relative; height:230px; border-radius:4px; overflow:hidden; background:#05060f; margin:6px 0 34px; }
+  .thermal canvas{ width:100%; height:100%; display:block; }
+  .thermal .lbl{ position:absolute; left:14px; bottom:11px; font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:#9fc4ff; text-shadow:0 1px 6px rgba(0,0,0,.8); }
+  .proj{ border-top:1px solid var(--hairline); padding:30px 0; display:grid; grid-template-columns:1fr auto; gap:18px 24px; align-items:start;}
+  .proj:last-of-type{ border-bottom:1px solid var(--hairline); }
+  .proj .pname{ font-family:var(--display); font-weight:700; color:var(--ink); font-size:19px; letter-spacing:-.01em; }
+  .proj .pstack{ font-size:11px; color:var(--mist); letter-spacing:.04em; margin-top:6px; }
+  .proj .pdesc{ font-family:var(--serif); font-size:16px; line-height:1.6; color:var(--read); margin-top:12px; max-width:54ch; }
+  .proj .pside{ display:flex; flex-direction:column; align-items:flex-end; gap:10px; text-align:right; min-width:120px;}
+  .proj .status{ font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--mist); display:flex; align-items:center; gap:7px;}
+  .proj .status .led{ width:7px;height:7px;border-radius:50%; background:var(--faint);}
+  .proj .status.live .led{ background:var(--cyan); box-shadow:0 0 0 3px rgba(76,214,255,.22);}
+  .proj a.repo{ font-size:12px; color:var(--ink); border-bottom:1px solid var(--hairline); padding-bottom:1px; }
+  .proj a.repo:hover{ border-color:var(--cyan); }
+  .proj-list{ margin-top:6px; }
+  .proj-card{ display:grid; grid-template-columns:172px 1fr; gap:22px; align-items:center; border-top:1px solid var(--hairline); padding:22px 0; transition:background .18s ease; }
+  .proj-list .proj-card:last-child{ border-bottom:1px solid var(--hairline); }
+  .proj-card:hover{ background:var(--panel); }
+  .proj-thumb{ width:172px; height:104px; display:block; border-radius:4px; background:#0b0b12; }
+  .proj-body .pname{ display:flex; align-items:center; gap:8px; }
+  .proj-body .arr{ color:var(--faint); transition:transform .18s ease, color .18s ease; }
+  .proj-card:hover .arr{ transform:translateX(4px); color:var(--cyan); }
+  .proj-card .status{ margin-top:12px; }
+  .proj-banner{ width:100%; aspect-ratio:24/9; display:block; border-radius:5px; background:#0b0b12; margin:8px 0 26px; }
+  @media(max-width:680px){ .proj-card{ grid-template-columns:1fr; } .proj-thumb{ width:100%; height:120px; } }
+
+  /* posts */
+  .postitem{ display:block; border-top:1px solid var(--hairline); padding:26px 0; }
+  .postlist .postitem:last-child{ border-bottom:1px solid var(--hairline); }
+  .postitem:hover .pi-title{ text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
+  .pi-banner{ width:100%; aspect-ratio: 5 / 1; display:block; background:#0b0b0d; border-radius:3px; margin-bottom:18px; }
+  .pi-title{ font-family:var(--display); font-weight:700; color:var(--ink); font-size:21px; line-height:1.2; letter-spacing:-.01em; margin:0;}
+  .pi-dek{ font-family:var(--serif); font-size:16px; color:var(--read); margin:9px 0 14px; max-width:62ch; line-height:1.55;}
+  .pi-foot{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .post-banner{ width:100%; aspect-ratio: 24 / 9; display:block; background:#0b0b0d; border-radius:3px; margin:0 0 32px;}
+  .post-body{ font-family:var(--serif); font-size:18.5px; line-height:1.72; color:var(--read); }
+  .post-body p{ margin:0 0 22px; } .post-body strong{ color:var(--ink); font-weight:600; } .post-body em{ font-style:italic; }
+  .post-body .pull{ font-family:var(--serif); font-style:italic; font-weight:500; color:var(--ink); font-size:clamp(19px,2.6vw,24px); line-height:1.42;
+    border-left:2px solid transparent; border-image:var(--aurora) 1; padding:2px 0 2px 20px; margin:36px 0; }
+  .post-body ul{ padding-left:20px; margin:0 0 22px; } .post-body li{ margin:0 0 10px; }
+  .post-body code{ font-family:var(--mono); background:var(--panel); border:1px solid var(--hairline); border-radius:3px; padding:1px 5px; font-size:14px; color:var(--ink);}
+  .backlink{ font-family:var(--mono); font-size:12px; color:var(--mist); letter-spacing:.04em; display:inline-block; margin-bottom:34px;}
+  .backlink:hover{ color:var(--ink); }
+
+  /* about */
+  .about-grid{ display:grid; grid-template-columns:120px 1fr; gap:14px 28px; margin-top:8px; font-family:var(--mono);}
+  .about-grid .rk{ font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--mist); padding-top:4px;}
+  .about-grid .rv{ font-size:13.5px; color:var(--graphite); line-height:1.6;}
+  .about-grid .rv b{ color:var(--ink); font-weight:700; }
+  .bhole-fig{ margin:54px 0 0; display:flex; flex-direction:column; align-items:center; }
+  #bhole{ width:100%; max-width:540px; height:clamp(280px,42vw,360px); display:block; background:#05050a; border-radius:5px;
+    box-shadow:0 0 50px rgba(124,92,255,.15); }
+  .bhole-cap{ font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--mist); margin-top:10px; text-align:center;}
+
+  /* footer (dark diorama) */
+  footer{ background:var(--night); border-top:1px solid #17171f; position:relative; }
+  .foot-art{ width:100%; height:clamp(220px,40vw,320px); display:block; cursor:pointer; }
+  .foot-in{ max-width:var(--wide); margin:0 auto; padding:14px clamp(20px,5vw,28px) 44px;
+    display:flex; justify-content:space-between; align-items:flex-end; gap:24px; flex-wrap:wrap; position:relative; z-index:2;}
+  .foot-in .fbrand{ font-family:var(--display); font-weight:700; color:#eef0ff; font-size:15px;}
+  .foot-in .fmeta{ font-size:11px; color:#7e84b8; letter-spacing:.05em; margin-top:6px; }
+  .foot-soc{ display:flex; gap:18px; }
+  .foot-soc a{ font-size:12px; color:#aeb2d4; letter-spacing:.04em; }
+  .foot-soc a:hover{ color:var(--cyan); }
+
+  @media (max-width:760px){
+    .home-grid{ grid-template-columns:1fr; }
+    .home-grid a{ border-right:0; border-bottom:1px solid var(--hairline); }
+    .home-grid a:last-child{ border-bottom:0; }
+    .proj{ grid-template-columns:1fr; }
+    .proj .pside{ align-items:flex-start; text-align:left; flex-direction:row; gap:18px; }
+    .about-grid{ grid-template-columns:1fr; gap:2px 0; }
+    .about-grid .rk{ margin-top:14px; }
+    .nav .soc{ display:none; }
+  }
+  @media (prefers-reduced-motion: reduce){ .page-enter{ animation:none; } .hero-hint .blink, .hero-glow, #fluid{ animation:none; } }
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="brand" href="#/" aria-label="Ali — home" id="brand"><canvas id="logo" aria-hidden="true"></canvas></a>
+    <div class="navlinks">
+      <a href="#/about" data-route="about" data-scr>About</a>
+      <a href="#/projects" data-route="projects" data-scr>Projects</a>
+      <a href="#/posts" data-route="posts" data-scr>Posts</a>
+      <span class="soc">
+        <a href="https://www.linkedin.com/" target="_blank" rel="noopener">in&#8599;</a>
+        <a href="https://x.com/" target="_blank" rel="noopener">x&#8599;</a>
+        <a href="https://www.instagram.com/" target="_blank" rel="noopener">ig&#8599;</a>
+      </span>
+    </div>
+  </nav>
+
+  <main id="app"></main>
+
+  <footer>
+    <canvas class="foot-art" aria-hidden="true"></canvas>
+    <div class="foot-in">
+      <div>
+        <div class="fbrand">ali_laboratory</div>
+        <div class="fmeta">Sydney &middot; building actuators &middot; &copy; 2026</div>
+      </div>
+      <div class="foot-soc">
+        <a href="https://github.com/alislaboratory" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://x.com/" target="_blank" rel="noopener">X</a>
+        <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+<script>
+/* ============================== CONTENT ============================== */
+const PROJECTS = [
+  { name:"Lunar Drive V2", slug:"lunar-drive-v2", stack:"ESP32-S3 \u00b7 DRV8316C \u00b7 AS5047P \u00b7 ESP-IDF / FOC",
+    desc:"A compact, integrated motor-driver board for field-oriented torque control of BLDC actuators. Closed-loop on a 14-bit magnetic encoder, built around the Phase Robotics actuator stack. The second generation fixed the SPI routing fault that bricked five v1 boards and moved firmware onto ESP-IDF for real-time current control.",
+    status:"In development", live:true, repo:null },
+  { name:"detentOne", slug:"detentone", stack:"FOC \u00b7 haptics \u00b7 magnetic encoder",
+    desc:"A single-axis closed-loop haptic device \u2014 programmable detents, endstops and textures rendered in software on a brushless motor. A small testbed for the control work that makes a robotic joint feel like a real, intentional mechanism rather than a stepper clicking through poses.",
+    status:"Open source", live:false, repo:"https://github.com/alislaboratory/detentOne" },
+  { name:"CARDio", slug:"cardio", stack:"PCB \u00b7 analog front-end \u00b7 biopotential",
+    desc:"A cardiac monitoring board: low-noise analog front-end and PCB for acquiring biopotential signals. My scope here was the hardware \u2014 instrumentation amplification, filtering and layout for a clean signal chain off the body.",
+    status:"Open source", live:false, repo:"https://github.com/alislaboratory/CARDio" },
+];
+const POSTS = [
+  { slug:"field-oriented-control", title:"Field-oriented control is a very fast magnet trick",
+    dek:"The algorithm that turns a brushless motor into a precise muscle, explained without drowning in the vector maths.",
+    tags:["motors","FOC","control"], date:"2026 \u00b7 06", art:"motor",
+    body:`
+<p class="lede">A brushless motor is, mechanically, dumb. It is copper, iron and a few magnets. Everything that makes it feel like a precise, torque-controlled muscle happens in software, many thousands of times a second. That software is field-oriented control.</p>
+<p>The core idea is almost embarrassingly simple once you see it. A motor makes torque when its magnetic field pushes on the rotor's magnets <strong>at right angles</strong>. Push along the rotor and you do nothing but waste current as heat. Push exactly 90 degrees ahead of it and every amp turns into torque. FOC is the trick of always pushing at that perfect angle, no matter how fast the rotor is spinning.</p>
+<div class="pull">Stop thinking in terms of three fixed coils. Think in terms of one magnetic arrow you can point wherever you like \u2014 and you always point it 90 degrees ahead of the rotor.</div>
+<p>To do that you need two things: to know exactly where the rotor is right now (that's the magnetic encoder), and to translate "point the field this way" back into the three real coil currents (that's the Clarke and Park transforms \u2014 really just rotating your frame of reference so the maths gets easy). Close that loop fast enough and the motor stops behaving like a motor and starts behaving like a torque source you can command directly.</p>
+<p>That's the whole reason FOC matters for robotics. A joint you can command in torque, smoothly, with no cogging or lag, is a joint that can feel the world and react gently to it. The banner above is that rotating field made visible \u2014 the coloured glow sweeping around the stator is the commutation, the spinning core is the rotor chasing it.</p>
+<p class="meta">This is a placeholder post \u2014 a fuller write-up with scope traces is coming.</p>` },
+  { slug:"biology-is-engineering", title:"Biology is the engineering textbook we keep ignoring",
+    dek:"Medicine and robotics keep handing each other answers. The body solved torque density, sensing and self-repair a long time ago.",
+    tags:["biology","robotics","design"], date:"2026 \u00b7 05", art:"helix",
+    body:`
+<p class="lede">Spend a day in anatomy and then a day at a workbench building a robot joint, and you start to feel slightly embarrassed. Almost every hard problem in actuator design has already been solved, beautifully, in tissue.</p>
+<p>Muscle is an actuator with absurd power density that is also soft, backdrivable and self-repairing. Tendons route force around corners with near-zero backlash. Proprioception gives every joint a dense, distributed sense of its own position and load \u2014 the thing we bolt fragile encoders on to approximate. And the whole system rebuilds itself while running.</p>
+<div class="pull">Evolution had a few billion years and no datasheet. It is worth reading its work before reinventing the joint.</div>
+<p>I don't think the lesson is "copy biology" \u2014 wheels beat legs on smooth ground, and motors beat muscle for some jobs. The lesson is that biology is a catalogue of <strong>existence proofs</strong>. It tells you what is physically possible: how much force fits in this volume, how good sensing can get, how gracefully a system can degrade instead of failing hard.</p>
+<p>That's also why I find medicine and robotics so hard to separate. Both are, in the end, about bodies \u2014 understanding them, repairing them, extending them. The double helix in the banner is the original design document.</p>
+<p class="meta">Placeholder post \u2014 the long version, with specific muscle-vs-motor numbers, is in the works.</p>` },
+  { slug:"emergence-simple-rules", title:"Simple rules, complex machines",
+    dek:"A note on emergence \u2014 why the interesting behaviour of a robot almost never lives in any single line of its code.",
+    tags:["systems","emergence","control"], date:"2026 \u00b7 05", art:"life",
+    body:`
+<p class="lede">The banner above is Conway's Game of Life: four trivial rules about whether a cell lives or dies, and out of them come gliders, oscillators, structures that build other structures. Nobody programmed the glider. It just falls out.</p>
+<p>I keep coming back to it because it's the cleanest demonstration of a thing that is true of every robot I've built: <strong>the interesting behaviour is rarely in any one line of code.</strong> It lives in the interaction \u2014 between control loops, between a body and its environment, between many simple agents following local rules.</p>
+<div class="pull">Complexity you designed is fragile. Complexity that emerges from simple, local rules tends to be robust \u2014 because no single part is holding it all up.</div>
+<p>A walking gait can emerge from springs and reflexes without a central planner dictating every footfall. A swarm can cover a space with no member knowing the whole map. Even a single actuator, closed in a tight feedback loop, produces behaviour \u2014 stiffness, compliance, the feel of a detent \u2014 that isn't written down anywhere as an instruction.</p>
+<p>The design skill, then, isn't always specifying the behaviour you want. Often it's finding the simplest local rules whose interaction <em>happens</em> to be the behaviour you want \u2014 and being humble enough to let the system surprise you.</p>
+<p class="meta">Placeholder post \u2014 a deeper piece on emergent control is coming.</p>` },
+  { slug:"the-missing-actuator", title:"The missing $100 actuator",
+    dek:"Every serious robotics company is quietly building its own motor. That's a tell. Here's the gap, and why I'm building the part nobody sells.",
+    tags:["actuators","robotics","phase"], date:"2026 \u00b7 06", seed:7,
+    body:`
+<p class="lede">If you want to build a robot today, the brain is solved and the body is not. You can rent a frontier model by the token. You cannot buy a good actuator off a shelf.</p>
+<p>Try it. Go looking for a brushless, sensored, closed-loop rotary actuator \u2014 something with real torque density, an integrated driver, and a clean control interface \u2014 for under a hundred dollars. You won't find one. You'll find hobby gimbal motors with no gearbox, industrial servo modules that cost more than a used car, and a long tail of dev boards that each solve a quarter of the problem.</p>
+<p>So what does everyone do? They build their own. <strong>Every serious robotics company is vertically integrating the actuator</strong> \u2014 not because they want to, but because there is no other option. Boston Dynamics, the humanoid startups, the quadruped labs, the teleop rigs: each one re-derives the same motor, the same driver, the same field-oriented control loop, the same encoder-mounting headache. That duplication is one of the loudest signals in hardware right now.</p>
+<div class="pull">When the whole industry independently rebuilds the same component, the component is missing from the market \u2014 not from the bill of materials.</div>
+<h2>Why it stays missing</h2>
+<p>The actuator is hard precisely because it refuses to be one discipline. A good one is a motor, a gearbox, a power stage, a sensor and a real-time control problem fused into a single object the size of a yo-yo. Optimise the motor and you fight the thermals. Fix the thermals and you lose torque density. Add a gearbox and you import backlash. Close the loop and now firmware timing is your bottleneck. Each subsystem is a known problem; the integration is where the difficulty hides, and integration is exactly what a parts catalogue can't sell you.</p>
+<p>The result is a market shaped like a barbell. Cheap and useless on one end, excellent and unaffordable on the other, and nothing in the fat middle where most robots actually live.</p>
+<h2>Why I'm building one</h2>
+<p>This is the thesis behind Phase. The actuator stack \u2014 motor, driver, gearbox, firmware \u2014 is the unsolved layer of robotics, and it's the layer that gates everything above it. I think of it the way compute looked before AWS: capable, but locked behind the willingness to build the whole thing yourself. The unlock isn't a better motor. It's a <strong>commoditised</strong> one: good enough to be boring, cheap enough to design around, and standard enough that the rest of the field stops paying the integration tax.</p>
+<p>Lunar Drive is the driver. The next layers are the motor and the gearbox. The goal is unglamorous on purpose \u2014 make the part everyone is currently reinventing, so they can go spend their cleverness on the robot instead.</p>
+<p>If the body is the bottleneck, the actuator is the bottleneck inside the bottleneck. That's the part worth building.</p>` },
+  { slug:"robotics-revolution", title:"Robotics is the largest thing we will ever build",
+    dek:"Software ate the world of bits. Robotics is what happens when intelligence finally gets hands \u2014 a bigger lever than anything before it.",
+    tags:["robotics","thesis","longform"], date:"2026 \u00b7 05", seed:13,
+    body:`
+<p class="lede">Every revolution so far has moved information. Robotics is the first one that moves matter \u2014 and matter is where almost everything we care about actually lives.</p>
+<p>The internet rearranged bits. It was world-changing and it was also, in a literal sense, weightless \u2014 it never lifted a beam, sutured a wound, planted a field or assembled a car. The economy it transformed sits on top of a physical one that has barely moved. Most human labour is still hands in the world: building, repairing, caring, growing, moving things from here to there.</p>
+<p>Robotics is the moment intelligence reaches that layer. <strong>For the first time the cognitive overhang has a body to act through.</strong> We spent a decade making minds that can reason about the physical world; the next decade is about letting them touch it.</p>
+<div class="pull">Software gave intelligence a voice. Robotics gives it hands. The second is the larger gift.</div>
+<h2>Why the lever is bigger</h2>
+<p>Think about what's gated on physical labour: housing, healthcare, manufacturing, agriculture, eldercare, infrastructure. These aren't niche markets \u2014 they're the floor of civilisation, and every one of them is constrained by the supply and cost of capable hands. A general-purpose physical worker doesn't optimise an industry. It re-prices the inputs to all of them at once.</p>
+<p>The demographics make it non-optional. The rich world is ageing into a labour shortage it cannot hire its way out of. Either the work doesn't get done, or something does it. There isn't a third option that scales.</p>
+<h2>Why it's also the hardest</h2>
+<p>And this is the catch that keeps me honest: bits forgive, atoms don't. A bad inference is a wrong sentence; a bad actuator command is a broken gearbox or a hurt person. The physical world has no undo, runs in real time, and punishes every shortcut with friction, heat, wear and gravity. That's exactly why it's been left for last \u2014 and why the team that solves the body, not just the brain, ends up holding the largest lever anyone has ever built.</p>
+<p>I'd rather work on the hard half.</p>` },
+  { slug:"no-gimbal-motors", title:"Where are the robotics gimbal motors?",
+    dek:"The whole field runs on motors designed to hold cameras steady. We're using drone parts to build robots, and the seams are starting to show.",
+    tags:["motors","bldc","supply chain"], date:"2026 \u00b7 04", seed:21,
+    body:`
+<p class="lede">Open up almost any low-cost robot arm or quadruped and you'll find the same surprise: the motors were never designed for robotics. They were designed to keep a camera level.</p>
+<p>Gimbal motors are everywhere in maker robotics for one reason \u2014 they're the only affordable, high-pole-count, smooth brushless motors that exist in volume. The drone industry needed them, scaled them, and drove the price down. So a generation of robot builders, myself included, reached for the part that was actually on the shelf.</p>
+<p>But a gimbal motor is optimised for a job that is almost the opposite of a robot joint. <strong>A gimbal lives at near-zero speed, holding position against tiny disturbances, cooled by open airflow, with essentially no shock loading.</strong> A robot joint wants peak torque on demand, tolerance to impact, a sane way to bolt on a gearbox, and thermal headroom for a duty cycle that isn't "float gently in the breeze."</p>
+<div class="pull">We didn't choose gimbal motors. We inherited them \u2014 because the part the field actually needs was never built.</div>
+<h2>The seams</h2>
+<ul>
+  <li><strong>No mounting story.</strong> Gimbal motors expose a bare rotor and stator. Every builder invents their own way to attach an output, a gearbox and a bearing \u2014 and most of them are slightly wrong.</li>
+  <li><strong>No integrated sensing.</strong> You're left bolting a magnetic encoder to the back and praying the magnet is concentric. Closed-loop control is only as good as that mechanical guess.</li>
+  <li><strong>Thermals as an afterthought.</strong> Hold real torque in a stalled joint and a gimbal motor cooks. The datasheet never promised otherwise.</li>
+  <li><strong>Wrong KV, wrong winding.</strong> Tuned for smooth slow rotation, not for the torque-at-low-speed profile a geared joint actually demands.</li>
+</ul>
+<h2>The opportunity hiding in the complaint</h2>
+<p>Every one of those seams is a design spec. A motor built <em>for</em> a robotic joint \u2014 integrated encoder boss, defined output interface, thermal path, a winding chosen for geared torque \u2014 would make a whole category of problems disappear. That's not a moonshot; it's just nobody's product yet. The drone industry gave us a good-enough part and we've been grateful for it. Being grateful isn't the same as being well-served.</p>
+<p>The next motor I care about isn't faster or cheaper than a gimbal motor. It's just honest about being a robot part.</p>` },
+  { slug:"bldc-scaling-laws", title:"BLDC scaling laws, and why hands are so hard",
+    dek:"Torque doesn't scale the way intuition says. The reason humanoid hands are brutal isn't software \u2014 it's the geometry of electric motors.",
+    tags:["bldc","scaling","manipulation"], date:"2026 \u00b7 03", seed:31,
+    body:`
+<p class="lede">People assume the hard part of a robot hand is the control. It isn't \u2014 at least not first. The first wall you hit is physics: you cannot fit enough torque into a finger-sized motor, and the reason is geometry.</p>
+<p>Here's the uncomfortable scaling fact. The torque a brushless motor can produce comes from force at the air gap acting over the rotor radius. Air-gap shear stress is roughly fixed by materials and cooling, so motor torque scales with the air-gap area times the radius \u2014 it grows with something close to the <strong>fourth power of the motor's linear size</strong>. Shrink a motor by half and you don't lose half the torque. You lose around fifteen-sixteenths of it.</p>
+<div class="pull">Halve the diameter and torque doesn't halve \u2014 it collapses by roughly an order of magnitude. That's the tax on every small joint.</div>
+<h2>Why this lands hardest on hands</h2>
+<p>A humanoid hand needs many independent joints, each strong enough to grip and manipulate, packed into a volume the size of, well, a hand. Every one of those joints wants torque, and torque is exactly the quantity that punishes small size hardest. The leg of a robot can be big and the scaling works in your favour. A finger has nowhere to hide.</p>
+<p>So you reach for a gearbox to trade speed for torque \u2014 and now you've imported the second tax:</p>
+<ul>
+  <li><strong>Backlash and friction</strong> that wreck the fine, low-force control manipulation actually needs.</li>
+  <li><strong>Loss of backdrivability</strong>, so the hand can no longer feel what it's touching through the motor.</li>
+  <li><strong>Volume and mass</strong> in precisely the place you have none to spare.</li>
+</ul>
+<h2>Locomotion is forgiving; manipulation is not</h2>
+<p>This is why walking robots arrived before dexterous ones. Locomotion lives in the regime where motors are large, loads are gross, and the body is mostly fighting gravity in predictable ways. <strong>Manipulation lives in the regime where motors are small, forces are fine, and the scaling laws are actively hostile.</strong> The bottleneck in robotics is shifting from "can it move" to "can it handle" \u2014 and the handling problem is, at root, a small-actuator problem.</p>
+<p>Which is the whole reason I keep coming back to the actuator. Crack high torque density in a sub-20mm package that stays backdrivable, and you don't improve hands incrementally \u2014 you move the wall. Everything above it in the stack has been waiting on that.</p>` },
+];
+
+/* ============================== HELPERS ============================== */
+const AURORA = [[91,108,255],[123,92,255],[161,92,255],[214,92,255],[92,214,255]];
+function lerpC(a,b,t){ return [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t]; }
+function spectrum(t){ t=Math.max(0,Math.min(0.9999,t)); const seg=t*(AURORA.length-1), i=seg|0, f=seg-i; const c=lerpC(AURORA[i],AURORA[i+1],f); return `rgb(${c[0]|0},${c[1]|0},${c[2]|0})`; }
+function setupCanvas(canvas){
+  const dpr=Math.min(window.devicePixelRatio||1,2); const rect=canvas.getBoundingClientRect();
+  const W=Math.max(2,Math.floor(rect.width)), H=Math.max(2,Math.floor(rect.height));
+  canvas.width=W*dpr; canvas.height=H*dpr; const ctx=canvas.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx,W,H};
+}
+
+/* ===================== COLOURED HALFTONE BANNERS ===================== */
+function drawHalftone(canvas, seed){
+  const {ctx,W,H}=setupCanvas(canvas); ctx.fillStyle="#0b0b0d"; ctx.fillRect(0,0,W,H);
+  const step=Math.max(6,Math.round(H/24));
+  const r1=(Math.sin(seed*1.7)*0.5+0.5), r2=(Math.cos(seed*0.9)*0.5+0.5);
+  const fx1=W*(0.30+0.4*r1), fy1=H*(0.42+0.3*r2), fx2=W*(0.72-0.3*r2), fy2=H*(0.55-0.2*r1);
+  const k1=0.020+0.012*r1, k2=0.024+0.014*r2, hueShift=(seed*0.137)%1;
+  for(let y=step/2;y<H;y+=step){ for(let x=step/2;x<W;x+=step){
+    const d1=Math.hypot(x-fx1,y-fy1), d2=Math.hypot(x-fx2,y-fy2);
+    let v=0.5+0.34*Math.sin(d1*k1+seed)+0.30*Math.sin(d2*k2-seed*0.5)+0.16*Math.sin((x+y)*0.011*(1+r1));
+    const edge=1-Math.min(1,Math.hypot((x-W/2)/(W*0.64),(y-H/2)/(H*0.66)));
+    v=v*0.62+edge*0.5; v=Math.max(0,Math.min(1,v));
+    const rad=v*v*(step*0.5); if(rad<0.45) continue;
+    const hue=((x/W)*0.6+(y/H)*0.25+v*0.3+hueShift)%1;
+    ctx.globalAlpha=0.35+0.65*v; ctx.fillStyle=spectrum(hue);
+    ctx.beginPath(); ctx.arc(x,y,rad,0,Math.PI*2); ctx.fill();
+  }}
+  ctx.globalAlpha=1; const grd=ctx.createLinearGradient(0,0,0,H);
+  grd.addColorStop(0,"rgba(255,255,255,0.05)"); grd.addColorStop(1,"rgba(0,0,0,0.30)"); ctx.fillStyle=grd; ctx.fillRect(0,0,W,H);
+}
+function specArr(t){ t=Math.max(0,Math.min(0.9999,t)); const seg=t*(AURORA.length-1), i=seg|0, f=seg-i; return lerpC(AURORA[i],AURORA[i+1],f); }
+/* animated halftone banner */
+function createBanner(canvas, seed){
+  let ctx,W,H,step,last=0,t0=performance.now();
+  const r1=(Math.sin(seed*1.7)*0.5+0.5), r2=(Math.cos(seed*0.9)*0.5+0.5), hueShift=(seed*0.137)%1;
+  function resize(){ const s=setupCanvas(canvas); ctx=s.ctx;W=s.W;H=s.H; step=Math.max(7,Math.round(H/22)); }
+  function frame(now){ if(now-last<50)return; last=now; const t=(now-t0)/1000;
+    ctx.fillStyle="#0b0b0d"; ctx.fillRect(0,0,W,H);
+    const fx1=W*(0.30+0.4*r1)+Math.sin(t*0.5)*W*0.06, fy1=H*(0.42+0.3*r2)+Math.cos(t*0.4)*H*0.14;
+    const fx2=W*(0.72-0.3*r2)+Math.cos(t*0.45)*W*0.06, fy2=H*(0.55-0.2*r1)+Math.sin(t*0.5)*H*0.14;
+    const k1=0.020+0.012*r1, k2=0.024+0.014*r2;
+    for(let y=step/2;y<H;y+=step){ for(let x=step/2;x<W;x+=step){
+      const d1=Math.hypot(x-fx1,y-fy1), d2=Math.hypot(x-fx2,y-fy2);
+      let v=0.5+0.34*Math.sin(d1*k1+seed+t*0.6)+0.30*Math.sin(d2*k2-seed*0.5-t*0.4)+0.16*Math.sin((x+y)*0.011*(1+r1));
+      const edge=1-Math.min(1,Math.hypot((x-W/2)/(W*0.64),(y-H/2)/(H*0.66)));
+      v=v*0.62+edge*0.5; v=Math.max(0,Math.min(1,v));
+      const rad=v*v*(step*0.5); if(rad<0.5) continue;
+      const hue=((x/W)*0.6+(y/H)*0.25+v*0.3+hueShift+t*0.03)%1;
+      ctx.globalAlpha=0.35+0.65*v; ctx.fillStyle=spectrum(hue);
+      ctx.beginPath(); ctx.arc(x,y,rad,0,Math.PI*2); ctx.fill();
+    }}
+    ctx.globalAlpha=1;
+  }
+  return {static:false, resize, frame};
+}
+/* animated pixel-art placeholder (project art) */
+function createPixelArt(canvas, seed){
+  let dctx,loW,loH,img,data,t=0,last=0;
+  function resize(){ const r=canvas.getBoundingClientRect(); const sc=5; loW=Math.max(20,Math.round(r.width/sc)); loH=Math.max(14,Math.round(r.height/sc));
+    canvas.width=loW; canvas.height=loH; canvas.style.imageRendering='pixelated'; dctx=canvas.getContext('2d'); img=dctx.createImageData(loW,loH); data=img.data; }
+  function frame(now){ if(now-last<60)return; last=now; t+=0.055;
+    for(let y=0;y<loH;y++){ for(let x=0;x<loW;x++){ const nx=x/loW, ny=y/loH;
+      let v=0.5+0.5*Math.sin((nx*6+seed)+t)*Math.cos(ny*5-t*0.7)+0.4*Math.sin((nx+ny)*6+t*1.2+seed);
+      const ang=Math.atan2(ny-0.5,nx-0.5), rr=Math.hypot(nx-0.5,ny-0.5);
+      const rotor=0.5+0.5*Math.sin(ang*4 - t*2 + rr*9);
+      v=v*0.6+rotor*0.5; v=Math.max(0,Math.min(1,v));
+      const c=specArr((v*0.7+seed*0.11)%1); const b=0.22+0.78*v;
+      const o=(y*loW+x)*4; data[o]=c[0]*b; data[o+1]=c[1]*b; data[o+2]=c[2]*b; data[o+3]=255;
+    }}
+    dctx.putImageData(img,0,0);
+  }
+  return {static:false, resize, frame};
+}
+/* spinning BLDC motor with rotating commutation field */
+function createMotorArt(canvas){
+  let dctx,loW,loH,img,data,t=0,last=0,cx,cy,R;
+  function resize(){ const r=canvas.getBoundingClientRect(); const sc=4; loW=Math.max(40,Math.round(r.width/sc)); loH=Math.max(20,Math.round(r.height/sc));
+    canvas.width=loW; canvas.height=loH; canvas.style.imageRendering='pixelated'; dctx=canvas.getContext('2d'); img=dctx.createImageData(loW,loH); data=img.data; cx=loW/2; cy=loH/2; R=Math.min(loW,loH)*0.46; }
+  function frame(now){ if(now-last<45)return; last=now; t+=0.05;
+    const rotor=t*1.1, field=t*2.6, P=2, teeth=12;
+    const Rsh=R*0.16, Rro=R*0.52, Rsi=R*0.62, Rso=R*1.0;
+    for(let y=0;y<loH;y++){ for(let x=0;x<loW;x++){ const dx=x-cx, dy=y-cy, r=Math.hypot(dx,dy), th=Math.atan2(dy,dx); let R8=6,G=8,B=15;
+      if(r<Rso){
+        if(r<Rsh){ const s=0.55+0.45*Math.sin(th*3+rotor); R8=110*s+30;G=112*s+30;B=125*s+34; }
+        else if(r<Rro){ const pole=Math.cos(P*(th-rotor)); const sh=0.45+0.55*Math.abs(pole);
+          if(pole>0){ R8=210*sh;G=54*sh;B=48*sh; } else { R8=56*sh;G=92*sh;B=220*sh; } }
+        else if(r<Rsi){ R8=9;G=12;B=20; }
+        else { const tooth=Math.cos(teeth*th); const isT=tooth>-0.1; let steel=isT?0.5:0.16;
+          const glow=Math.max(0,Math.cos(th-field));
+          const seg=((((th+Math.PI)/(2*Math.PI/3))|0)%3+3)%3;
+          const pc= seg===0?[255,80,70]: seg===1?[90,220,120]:[90,150,255];
+          let Rr=48+steel*110+glow*pc[0]*0.6, Gg=52+steel*110+glow*pc[1]*0.6, Bb=64+steel*120+glow*pc[2]*0.6;
+          if(!isT){ Rr*=0.4;Gg*=0.4;Bb*=0.4; } R8=Rr;G=Gg;B=Bb; }
+      }
+      const o=(y*loW+x)*4; data[o]=Math.min(255,R8); data[o+1]=Math.min(255,G); data[o+2]=Math.min(255,B); data[o+3]=255;
+    }}
+    dctx.putImageData(img,0,0);
+  }
+  return {static:false, resize, frame};
+}
+/* rotating DNA double helix */
+function createHelixArt(canvas){
+  let dctx,loW,loH,img,data,t=0,last=0;
+  function resize(){ const r=canvas.getBoundingClientRect(); const sc=4; loW=Math.max(40,Math.round(r.width/sc)); loH=Math.max(20,Math.round(r.height/sc));
+    canvas.width=loW; canvas.height=loH; canvas.style.imageRendering='pixelated'; dctx=canvas.getContext('2d'); img=dctx.createImageData(loW,loH); data=img.data; }
+  function set(x,y,r,g,b){ if(x<0||x>=loW||y<0||y>=loH)return; const o=((y|0)*loW+(x|0))*4; if(data[o]+data[o+1]+data[o+2] < r+g+b){ data[o]=r;data[o+1]=g;data[o+2]=b;data[o+3]=255; } }
+  function frame(now){ if(now-last<45)return; last=now; t+=0.05;
+    for(let i=0;i<data.length;i+=4){ data[i]=5;data[i+1]=7;data[i+2]=16;data[i+3]=255; }
+    const midY=loH/2, amp=loH*0.34, k=0.26;
+    for(let x=0;x<loW;x++){ const a=k*x+t; const y1=midY+amp*Math.sin(a), y2=midY+amp*Math.sin(a+Math.PI); const front=Math.cos(a);
+      if(x%3===0){ const top=Math.min(y1,y2)|0, bot=Math.max(y1,y2)|0; const rb=0.3+0.7*Math.abs(Math.sin(a)); const c=specArr((x/loW+t*0.04)%1);
+        for(let yy=top;yy<=bot;yy++) set(x,yy, c[0]*rb*0.5|0, (c[1]*rb*0.5+40)|0, c[2]*rb*0.5|0); }
+      const b1=front>0?1:0.4, b2=front<0?1:0.4;
+      set(x,y1,90*b1,(210*b1)|0,(255*b1)|0); set(x,y1+1,70*b1|0,(170*b1)|0,(220*b1)|0);
+      set(x,y2,(255*b2)|0,(110*b2)|0,(200*b2)|0); set(x,y2+1,(220*b2)|0,(90*b2)|0,(170*b2)|0);
+    }
+    dctx.putImageData(img,0,0);
+  }
+  return {static:false, resize, frame};
+}
+/* Conway's Game of Life */
+function createLifeArt(canvas){
+  let dctx,loW,loH,img,data,grid,age,last=0,stepInt=120;
+  function seed(){ for(let i=0;i<grid.length;i++){ grid[i]=Math.random()<0.30?1:0; age[i]=0; } }
+  function resize(){ const r=canvas.getBoundingClientRect(); const sc=5; loW=Math.max(30,Math.round(r.width/sc)); loH=Math.max(14,Math.round(r.height/sc));
+    canvas.width=loW; canvas.height=loH; canvas.style.imageRendering='pixelated'; dctx=canvas.getContext('2d'); img=dctx.createImageData(loW,loH); data=img.data;
+    grid=new Uint8Array(loW*loH); age=new Uint16Array(loW*loH); seed(); }
+  function step(){ const nxt=new Uint8Array(loW*loH); let alive=0;
+    for(let y=0;y<loH;y++){ for(let x=0;x<loW;x++){ let n=0;
+      for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++){ if(!dx&&!dy)continue; const xx=(x+dx+loW)%loW, yy=(y+dy+loH)%loH; n+=grid[yy*loW+xx]; }
+      const i=y*loW+x, a=grid[i]; const live=a?(n===2||n===3):(n===3); nxt[i]=live?1:0; if(live){ alive++; age[i]=a?Math.min(999,age[i]+1):1; } else age[i]=0;
+    }}
+    grid=nxt; if(alive<loW*loH*0.03) seed();
+  }
+  function frame(now){ if(now-last<stepInt)return; last=now; step();
+    for(let i=0;i<grid.length;i++){ const o=i*4; if(grid[i]){ const aa=Math.min(1,age[i]/14); const c=lerpC([150,255,228],[78,128,255],aa); data[o]=c[0];data[o+1]=c[1];data[o+2]=c[2]; } else { data[o]=4;data[o+1]=6;data[o+2]=12; } data[o+3]=255; }
+    dctx.putImageData(img,0,0);
+  }
+  return {static:false, resize, frame};
+}
+const Fluid = (() => {
+  const RAMP=" \u00b7:-=+o*#%@"; const VER=[[138,86,232],[78,196,255],[120,232,150],[232,96,206]];
+  let cv,ctx,hero,raf=0,running=false,reduced=false,fontPx=12,cw=7,ch=12,W=0,H=0;
+  let NX=0,NY=0,size=0,dt=0.085,u,v,u0,v0,dens,dens0,p,div,curl;
+  function veridia(t){ if(t<0)t=0; if(t>1)t=1; const s=t*(VER.length-1), i=s|0, f=s-i, j=Math.min(i+1,VER.length-1); return [VER[i][0]+(VER[j][0]-VER[i][0])*f, VER[i][1]+(VER[j][1]-VER[i][1])*f, VER[i][2]+(VER[j][2]-VER[i][2])*f]; }
+  let mouseX=-1,mouseY=-1,lastX=-1,lastY=-1,mDown=false,emitters=[],bursts=[],resizeTO=0;
+  const IX=(i,j)=> i+(NX+2)*j;
+  function alloc(){ size=(NX+2)*(NY+2); u=new Float32Array(size);v=new Float32Array(size);u0=new Float32Array(size);v0=new Float32Array(size);dens=new Float32Array(size);dens0=new Float32Array(size);p=new Float32Array(size);div=new Float32Array(size);curl=new Float32Array(size); }
+  function setBnd(b,x){
+    for(let i=1;i<=NX;i++){ x[IX(i,0)]=b===2?-x[IX(i,1)]:x[IX(i,1)]; x[IX(i,NY+1)]=b===2?-x[IX(i,NY)]:x[IX(i,NY)]; }
+    for(let j=1;j<=NY;j++){ x[IX(0,j)]=b===1?-x[IX(1,j)]:x[IX(1,j)]; x[IX(NX+1,j)]=b===1?-x[IX(NX,j)]:x[IX(NX,j)]; }
+    x[IX(0,0)]=0.5*(x[IX(1,0)]+x[IX(0,1)]); x[IX(0,NY+1)]=0.5*(x[IX(1,NY+1)]+x[IX(0,NY)]);
+    x[IX(NX+1,0)]=0.5*(x[IX(NX,0)]+x[IX(NX+1,1)]); x[IX(NX+1,NY+1)]=0.5*(x[IX(NX,NY+1)]+x[IX(NX+1,NY)]);
+  }
+  function project(uu,vv,pp,dd){ const h=1.0/Math.sqrt(NX*NY);
+    for(let j=1;j<=NY;j++) for(let i=1;i<=NX;i++){ dd[IX(i,j)]=-0.5*h*(uu[IX(i+1,j)]-uu[IX(i-1,j)]+vv[IX(i,j+1)]-vv[IX(i,j-1)]); pp[IX(i,j)]=0; }
+    setBnd(0,dd); setBnd(0,pp);
+    for(let k=0;k<4;k++){ for(let j=1;j<=NY;j++) for(let i=1;i<=NX;i++) pp[IX(i,j)]=(dd[IX(i,j)]+pp[IX(i-1,j)]+pp[IX(i+1,j)]+pp[IX(i,j-1)]+pp[IX(i,j+1)])/4; setBnd(0,pp); }
+    for(let j=1;j<=NY;j++) for(let i=1;i<=NX;i++){ uu[IX(i,j)]-=0.5*(pp[IX(i+1,j)]-pp[IX(i-1,j)])/h; vv[IX(i,j)]-=0.5*(pp[IX(i,j+1)]-pp[IX(i,j-1)])/h; }
+    setBnd(1,uu); setBnd(2,vv);
+  }
+  function advect(b,d,d0,uu,vv){ const dx=dt*NX,dy=dt*NY;
+    for(let j=1;j<=NY;j++) for(let i=1;i<=NX;i++){ let x=i-dx*uu[IX(i,j)], y=j-dy*vv[IX(i,j)];
+      if(x<0.5)x=0.5; if(x>NX+0.5)x=NX+0.5; if(y<0.5)y=0.5; if(y>NY+0.5)y=NY+0.5;
+      const i0=x|0,i1=i0+1,j0=y|0,j1=j0+1,s1=x-i0,s0=1-s1,t1=y-j0,t0=1-t1;
+      d[IX(i,j)]=s0*(t0*d0[IX(i0,j0)]+t1*d0[IX(i0,j1)])+s1*(t0*d0[IX(i1,j0)]+t1*d0[IX(i1,j1)]); }
+    setBnd(b,d);
+  }
+  function vorticity(){
+    const eps=0.9;
+    for(let j=1;j<=NY;j++) for(let i=1;i<=NX;i++) curl[IX(i,j)]=(u[IX(i,j+1)]-u[IX(i,j-1)])-(v[IX(i+1,j)]-v[IX(i-1,j)]);
+    for(let j=2;j<NY;j++) for(let i=2;i<NX;i++){
+      let nx=(Math.abs(curl[IX(i,j+1)])-Math.abs(curl[IX(i,j-1)]))*0.5;
+      let ny=(Math.abs(curl[IX(i+1,j)])-Math.abs(curl[IX(i-1,j)]))*0.5;
+      const len=Math.hypot(nx,ny)+1e-5; nx/=len; ny/=len; const w=curl[IX(i,j)];
+      u[IX(i,j)]+=eps*dt*nx*w; v[IX(i,j)]-=eps*dt*ny*w;
+    }
+  }
+  function buoyancy(){ const buo=0.7; for(let j=1;j<=NY;j++) for(let i=1;i<=NX;i++) v[IX(i,j)]-=buo*dt*dens[IX(i,j)]; }
+  function velStep(){ project(u,v,p,div); u0.set(u);v0.set(v); advect(1,u,u0,u0,v0); advect(2,v,v0,u0,v0); project(u,v,p,div); for(let i=0;i<size;i++){u[i]*=0.985;v[i]*=0.985;} }
+  function densStep(){ dens0.set(dens); advect(0,dens,dens0,u,v); for(let i=0;i<size;i++)dens[i]*=0.985; }
+  function addForce(cx,cy,fx,fy,amt){ if(cx<1||cx>NX||cy<1||cy>NY)return;
+    for(let dj=-1;dj<=1;dj++) for(let di=-1;di<=1;di++){ const i=cx+di,j=cy+dj; if(i<1||i>NX||j<1||j>NY)continue; const w=(di===0&&dj===0)?1:0.45; dens[IX(i,j)]+=amt*w; u[IX(i,j)]+=fx*w; v[IX(i,j)]+=fy*w; } }
+  function applyBurst(cx,cy){ const R=Math.max(4,Math.round(NX*0.06));
+    for(let dj=-R;dj<=R;dj++) for(let di=-R;di<=R;di++){ const i=cx+di,j=cy+dj; if(i<1||i>NX||j<1||j>NY)continue; const d=Math.hypot(di,dj); if(d>R)continue; const f=(1-d/R); const ang=Math.atan2(dj,di); u[IX(i,j)]+=Math.cos(ang)*4*f; v[IX(i,j)]+=Math.sin(ang)*4*f; dens[IX(i,j)]+=1.5*f; } }
+  function step(){
+    for(const e of emitters){ e.a+=e.sp; const cx=Math.round(NX*(0.5+0.34*Math.cos(e.a)*e.rx)); const cy=Math.round(NY*(0.5+0.34*Math.sin(e.a*1.3)*e.ry)); addForce(cx,cy,Math.cos(e.a+1.2)*0.7,Math.sin(e.a+0.4)*0.7,0.34); }
+    if(mouseX>=0){ const cx=Math.max(1,Math.min(NX,Math.round(mouseX*NX)+1)); const cy=Math.max(1,Math.min(NY,Math.round(mouseY*NY)+1)); let fx=0,fy=0; if(lastX>=0){fx=(mouseX-lastX)*NX*0.55;fy=(mouseY-lastY)*NY*0.55;} addForce(cx,cy,fx,fy,0.9); lastX=mouseX; lastY=mouseY; }
+    while(bursts.length){ const b=bursts.pop(); applyBurst(b.x,b.y); }
+    velStep(); densStep();
+  }
+  function render(){ ctx.clearRect(0,0,W,H); const L=RAMP.length-1;
+    for(let j=1;j<=NY;j++){ for(let i=1;i<=NX;i++){ let d=dens[IX(i,j)]*3.2; if(d<0.05) continue; if(d>1)d=1;
+      const g=58-Math.round(d*30); ctx.globalAlpha=0.18+0.72*d; ctx.fillStyle=`rgb(${g},${g+2},${g+5})`;
+      ctx.fillText(RAMP[(d*L)|0], (i-1)*cw, (j-1)*ch); } }
+    ctx.globalAlpha=1; }
+  function loop(){ if(!running)return; step(); render(); raf=requestAnimationFrame(loop); }
+  function measure(){ const s=setupCanvas(cv); ctx=s.ctx; W=s.W; H=s.H;
+    fontPx=Math.max(11,Math.min(18,Math.round(H/40))); ctx.font=`${fontPx}px "JetBrains Mono", ui-monospace, monospace`; ctx.textBaseline="top";
+    cw=fontPx*0.6; ch=fontPx*1.02; NX=Math.max(20,Math.floor(W/cw)); NY=Math.max(12,Math.floor(H/ch));
+    while(NX*NY>5200){ NX=Math.floor(NX*0.93); NY=Math.floor(NY*0.93); } alloc(); }
+  function cell(x,y){ const r=hero.getBoundingClientRect(); return {x:Math.max(1,Math.min(NX,Math.round((x-r.left)/r.width*NX)+1)), y:Math.max(1,Math.min(NY,Math.round((y-r.top)/r.height*NY)+1))}; }
+  function onMove(x,y){ const r=hero.getBoundingClientRect(); mouseX=(x-r.left)/r.width; mouseY=(y-r.top)/r.height; if(mouseX<0||mouseX>1||mouseY<0||mouseY>1){mouseX=-1;lastX=-1;} }
+  function bind(){
+    hero.addEventListener('pointermove',e=>onMove(e.clientX,e.clientY),{passive:true});
+    hero.addEventListener('pointerdown',e=>{ mDown=true; onMove(e.clientX,e.clientY); const c=cell(e.clientX,e.clientY); bursts.push(c); });
+    window.addEventListener('pointerup',()=>mDown=false,{passive:true});
+    hero.addEventListener('pointerleave',()=>{mouseX=-1;lastX=-1;});
+    window.addEventListener('resize',()=>{ clearTimeout(resizeTO); resizeTO=setTimeout(()=>{ if(running){measure();seed();} },180); });
+  }
+  function seed(){ emitters=[{a:0,sp:0.006,rx:1,ry:0.7},{a:2.1,sp:-0.0045,rx:0.7,ry:1},{a:4,sp:0.0075,rx:0.85,ry:0.85}]; }
+  function start(h,c){ hero=h; cv=c; reduced=matchMedia('(prefers-reduced-motion: reduce)').matches; measure(); seed(); bind(); running=true; if(reduced){ for(let k=0;k<160;k++)step(); render(); running=false; } else loop(); }
+  function stop(){ running=false; if(raf)cancelAnimationFrame(raf); raf=0; }
+  return {start,stop};
+})();
+
+/* ===================== ASCII AQUARIUM (asciiquarium-style) ===================== */
+function createAquarium(canvas){
+  let ctx,W,H,last=0,t0=performance.now(); let fish=[],bubbles=[],weed=[],jellies=[],crab=null,treats=[];
+  const COL=["#6fe0ff","#ffd15a","#ff7ad0","#b08bff","#5fe6c0","#ffa24c"];
+  function mkFish(){ const bd=Math.random()<0.5?1:-1; return {
+    x:Math.random()*W, y:70+Math.random()*(H-150), h:bd>0?0:Math.PI, bd,
+    spd:0.040+Math.random()*0.022, sz:15+Math.random()*13, col:COL[(Math.random()*COL.length)|0],
+    ph:Math.random()*6, flap:5+Math.random()*4 }; }
+  function init(){
+    fish=[]; const n=Math.max(4,Math.round(W/190)); for(let i=0;i<n;i++) fish.push(mkFish());
+    bubbles=[]; const nb=Math.round(W/46); for(let i=0;i<nb;i++) bubbles.push({x:Math.random()*W,y:Math.random()*H,r:5+Math.random()*7,sp:0.02+Math.random()*0.05});
+    weed=[]; const cols=Math.max(3,Math.round(W/100)); for(let i=0;i<cols;i++) weed.push({x:30+i*100+Math.random()*40, h:4+(Math.random()*5|0), ph:Math.random()*6});
+    jellies=[]; const nj=Math.max(2,Math.round(W/440)); for(let i=0;i<nj;i++) jellies.push({x:Math.random()*W, y:Math.random()*H, sp:0.012+Math.random()*0.02, ph:Math.random()*6, col:Math.random()<0.5?"#d68bff":"#ff9ad6"});
+    crab={ x:W*0.5, dir:1 }; treats=[];
+  }
+  function resize(){ const s=setupCanvas(canvas); ctx=s.ctx;W=s.W;H=s.H; init(); }
+  function angDiff(a,b){ let d=a-b; while(d>Math.PI)d-=2*Math.PI; while(d<-Math.PI)d+=2*Math.PI; return d; }
+  function frame(now){
+    const dt=Math.min(40, now-last)||16; last=now; const t=(now-t0)/1000;
+    // black water with faint depth
+    ctx.fillStyle="#03070d"; ctx.fillRect(0,0,W,H);
+    const dg=ctx.createLinearGradient(0,0,0,H); dg.addColorStop(0,"rgba(20,60,90,0.35)"); dg.addColorStop(0.5,"rgba(8,20,34,0)"); dg.addColorStop(1,"rgba(0,4,10,0.6)"); ctx.fillStyle=dg; ctx.fillRect(0,0,W,H);
+    // light shafts
+    ctx.save(); ctx.globalCompositeOperation='lighter';
+    for(let i=0;i<4;i++){ const x=(i/4)*W+Math.sin(t*0.3+i)*46; const gg=ctx.createLinearGradient(x,0,x+120,H); gg.addColorStop(0,"rgba(110,200,255,0.05)"); gg.addColorStop(1,"rgba(110,200,255,0)"); ctx.fillStyle=gg; ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x+40,0); ctx.lineTo(x+40+120,H); ctx.lineTo(x+120,H); ctx.closePath(); ctx.fill(); }
+    ctx.restore();
+    // ASCII surface waves (top)
+    ctx.textBaseline="middle"; ctx.font='13px "JetBrains Mono", monospace'; ctx.fillStyle="rgba(120,200,240,0.55)";
+    for(let x=0;x<W;x+=10){ const w1=Math.sin(x*0.06+t*1.6); const c=w1>0.4?"~":(w1<-0.4?".":"-"); ctx.fillText(c, x, 14+w1*3); }
+    ctx.fillStyle="rgba(90,170,210,0.30)"; for(let x=6;x<W;x+=10){ const w2=Math.sin(x*0.05-t*1.1); ctx.fillText(w2>0?"~":"-", x, 28+w2*3); }
+    // seaweed
+    ctx.textBaseline="alphabetic"; ctx.font='16px "JetBrains Mono", monospace'; ctx.fillStyle="#3aa86f";
+    for(const s of weed){ for(let k=0;k<s.h;k++){ const sway=Math.sin(t*1.2+s.ph+k*0.5)*6; ctx.fillText(k%2?")":"(", s.x+sway, H-8-k*14); } }
+    // castle
+    ctx.fillStyle="#2a6a7e"; ctx.font='15px "JetBrains Mono", monospace';
+    const bx=W-118, by=H-12;
+    ctx.fillText("|^|   |^|", bx, by-40); ctx.fillText("|_________|", bx-3, by-27);
+    ctx.fillText("| [] /\\ [] |", bx-3, by-14); ctx.fillText("|__________|", bx-3, by-1);
+    ctx.fillStyle="#06141f"; ctx.fillRect(0,H-9,W,9);
+    // jellyfish
+    for(const j of jellies){ j.y-=j.sp*dt; if(j.y<-34){ j.y=H+34; j.x=Math.random()*W; } const sway=Math.sin(t*1.5+j.ph)*4;
+      ctx.save(); ctx.globalAlpha=0.85; ctx.shadowColor=j.col; ctx.shadowBlur=10; ctx.fillStyle=j.col; ctx.font='15px "JetBrains Mono", monospace'; ctx.textBaseline="middle";
+      ctx.fillText(".-.", j.x-9+sway*0.4, j.y-8); ctx.fillText("(   )", j.x-13+sway*0.4, j.y);
+      ctx.globalAlpha=0.6; for(let k=0;k<4;k++){ ctx.fillText("|", j.x-9+k*6+Math.sin(t*3+k+j.ph)*3, j.y+10+(k%2?2:0)); }
+      ctx.restore(); }
+    // crab
+    if(crab){ crab.x+=crab.dir*0.03*dt; if(crab.x>W-70){crab.dir=-1;} if(crab.x<20){crab.dir=1;}
+      const legs=Math.sin(t*8)>0?"/\\":"\\/"; ctx.fillStyle="#ff7a3c"; ctx.font='15px "JetBrains Mono", monospace'; ctx.textBaseline="alphabetic";
+      ctx.fillText(legs+"(\u00b0,\u00b0)"+legs, crab.x, H-12); }
+    // bubbles
+    ctx.textBaseline="middle"; ctx.font='12px "JetBrains Mono", monospace';
+    for(const b of bubbles){ b.y-=b.sp*dt; b.x+=Math.sin((t+b.r)*1.5)*0.25; if(b.y<-12){ b.y=H+12; b.x=Math.random()*W; } ctx.fillStyle="rgba(150,225,255,0.5)"; ctx.fillText(b.r>10?"O":"o", b.x, b.y); }
+    // food pellets (easter egg: click to feed)
+    ctx.font='13px "JetBrains Mono", monospace';
+    for(let ti=treats.length-1; ti>=0; ti--){ const tr=treats[ti]; tr.y+=tr.vy*dt; tr.life-=0.0006*dt; if(tr.y>H-12||tr.life<=0){ treats.splice(ti,1); continue; }
+      ctx.globalAlpha=Math.max(0,Math.min(1,tr.life)); ctx.fillStyle="#ffcf5a"; ctx.fillText("\u00b7", tr.x, tr.y); }
+    ctx.globalAlpha=1;
+    // fish: steer toward food, swim by heading + tail flap
+    ctx.textBaseline="middle";
+    for(const f of fish){
+      let tgt=null,bd2=240*240; for(const tr of treats){ const dx=tr.x-f.x, dy=tr.y-f.y, dd=dx*dx+dy*dy; if(dd<bd2){bd2=dd;tgt=tr;} }
+      let desired, spd;
+      if(tgt){ desired=Math.atan2(tgt.y-f.y, tgt.x-f.x); spd=0.085; }
+      else { desired=(f.bd>0?0:Math.PI)+Math.sin(t*0.6+f.ph)*0.22;
+        if(f.y<74) desired=(f.bd>0?0.5:Math.PI-0.5); else if(f.y>H-58) desired=(f.bd>0?-0.5:Math.PI+0.5);
+        spd=f.spd; }
+      const turn=0.0042*dt, dh=angDiff(desired,f.h); f.h+=Math.max(-turn,Math.min(turn,dh));
+      f.x+=Math.cos(f.h)*spd*dt; f.y+=Math.sin(f.h)*spd*dt;
+      if(f.x<-60){ f.x=W+60; f.y=70+Math.random()*(H-150); } if(f.x>W+60){ f.x=-60; f.y=70+Math.random()*(H-150); }
+      if(f.y<52){ f.y=52; f.h=-f.h; } if(f.y>H-26){ f.y=H-26; f.h=-f.h; }
+      if(tgt && Math.hypot(tgt.x-f.x,tgt.y-f.y)<14){ tgt.life=0; bubbles.push({x:tgt.x,y:tgt.y-4,r:6,sp:0.06}); }
+      const face=Math.cos(f.h)>=0?1:-1, flapOn=Math.sin(t*f.flap+f.ph)>0;
+      const s = face>0 ? ((flapOn?"<":"{")+"(((>") : ("<)))"+(flapOn?">":"}"));
+      const wig=Math.sin(t*f.flap+f.ph)*1.6;
+      ctx.font=`${f.sz}px "JetBrains Mono", monospace`; ctx.fillStyle=f.col; ctx.shadowColor=f.col; ctx.shadowBlur=8;
+      ctx.fillText(s, f.x-f.sz*0.5, f.y+wig);
+    }
+    ctx.shadowBlur=0;
+  }
+  function feed(x,y){ for(let i=0;i<6;i++) treats.push({x:x+(Math.random()-0.5)*26, y:Math.max(34,y+(Math.random()-0.5)*10), vy:0.014+Math.random()*0.018, life:1}); }
+  return {static:false, resize, frame, feed};
+}
+
+/* ===================== THERMAL BLUE/RED ASCII ===================== */
+function createThermal(canvas){
+  const CHARS="ABCDEFGHKMNRSXZ0123456789#%$&@=+*<>/\\|".split("");
+  let ctx,W,H,fs,cw,ch,cols,rows,glyph,last=0,t0=performance.now();
+  function resize(){ const s=setupCanvas(canvas); ctx=s.ctx;W=s.W;H=s.H;
+    fs=Math.max(9,Math.min(13,Math.round(H/16))); ctx.font=`bold ${fs}px "JetBrains Mono", monospace`; ctx.textBaseline="top";
+    cw=fs*0.62; ch=fs*1.05; cols=Math.ceil(W/cw); rows=Math.ceil(H/ch);
+    glyph=new Array(cols*rows); for(let i=0;i<glyph.length;i++) glyph[i]=CHARS[(Math.random()*CHARS.length)|0]; }
+  function frame(now){
+    if(now-last<42) return; last=now; const t=(now-t0)/1000;
+    ctx.fillStyle="#05060f"; ctx.fillRect(0,0,W,H);
+    const srcs=[ {x:0.5+0.28*Math.cos(t*0.6), y:0.5+0.30*Math.sin(t*0.5), s:0.9},
+                 {x:0.5+0.34*Math.cos(t*0.4+2), y:0.5+0.22*Math.sin(t*0.7+1), s:0.7},
+                 {x:0.5+0.20*Math.cos(t*0.9+4), y:0.5+0.26*Math.sin(t*0.3+3), s:0.6} ];
+    for(let gy=0;gy<rows;gy++){ for(let gx=0;gx<cols;gx++){
+      const nx=(gx+0.5)/cols, ny=(gy+0.5)/rows; let heat=0;
+      for(const s of srcs){ const dx=(nx-s.x)*1.6, dy=ny-s.y; heat+=s.s/(dx*dx+dy*dy+0.02); }
+      heat=Math.min(1.4,heat*0.05);
+      const idx=gy*cols+gx; if(Math.random()<0.06) glyph[idx]=CHARS[(Math.random()*CHARS.length)|0];
+      let col,alpha;
+      if(heat<0.45){ const b=heat/0.45; col=[30+b*40,70+b*70,200+b*55]; alpha=0.42+0.42*b; }
+      else { const h=Math.min(1,(heat-0.45)/0.95); col = h<0.5 ? lerpC([255,60,40],[255,170,40],h/0.5) : lerpC([255,170,40],[255,250,210],(h-0.5)/0.5); alpha=0.88+0.12*h; }
+      ctx.globalAlpha=Math.min(1,alpha); ctx.fillStyle=`rgb(${col[0]|0},${col[1]|0},${col[2]|0})`;
+      ctx.fillText(glyph[idx], gx*cw, gy*ch);
+    }}
+    ctx.globalAlpha=1;
+  }
+  return {static:false, resize, frame};
+}
+
+/* ===================== ASCII BLACK HOLE (lensed disk, large) ===================== */
+function createBlackHoleAscii(canvas){
+  const RAMP=" .:-=+*oxX#%@"; let ctx,W,H,fs,cw,ch,cols,rows,aspect,t=0,last=0,stars=[];
+  function colTemp(v){ let c;
+    if(v>0.84) c=lerpC([255,214,128],[255,252,238],(v-0.84)/0.16);
+    else if(v>0.56) c=lerpC([255,128,46],[255,214,128],(v-0.56)/0.28);
+    else if(v>0.30) c=lerpC([206,46,32],[255,128,46],(v-0.30)/0.26);
+    else c=lerpC([120,72,200],[206,46,32], v/0.30);
+    return c;
+  }
+  function resize(){ const s=setupCanvas(canvas); ctx=s.ctx;W=s.W;H=s.H; aspect=W/H;
+    fs=Math.max(5,Math.min(8,Math.round(H/44))); ctx.font=`${fs}px "JetBrains Mono", ui-monospace, monospace`; ctx.textBaseline="top";
+    cw=fs*0.6; ch=fs*1.05; cols=Math.floor(W/cw); rows=Math.floor(H/ch);
+    stars=[]; const ns=Math.round(cols*rows*0.05);
+    for(let i=0;i<ns;i++) stars.push({gx:(Math.random()*cols)|0, gy:(Math.random()*rows)|0, b:0.3+Math.random()*0.6, ph:Math.random()*6, blue:Math.random()<0.5});
+  }
+  function frame(now){
+    if(now-last<33) return; last=now; t+=0.034;
+    ctx.fillStyle="#05050a"; ctx.fillRect(0,0,W,H);
+    const Rh=0.20, Rin=0.24, Rout=1.25, flat=0.42; const ccx=(cols-1)/2, ccy=(rows-1)/2;
+    // faint star field
+    for(const s of stars){ const b=s.b*(0.5+0.5*Math.sin(t*2+s.ph)); ctx.globalAlpha=0.25+0.5*b;
+      ctx.fillStyle=s.blue?"#9fb6ff":"#e6ecff"; ctx.fillText(".", s.gx*cw, s.gy*ch); }
+    ctx.globalAlpha=1;
+    for(let gy=0;gy<rows;gy++){ for(let gx=0;gx<cols;gx++){
+      const nx=((gx-ccx)*cw)/(H*0.5), ny=((gy-ccy)*ch)/(H*0.5);
+      const rs=Math.hypot(nx,ny), d=Math.hypot(nx, ny/flat), az=Math.atan2(ny/flat, nx);
+      let v=0;
+      if(d>Rin && d<Rout){ const tr=(d-Rin)/(Rout-Rin); let br=Math.pow(1-tr,1.1);
+        br*=(0.45+0.55*Math.sin(az*3 - t*3.0 + d*13)); br=Math.max(0,br);
+        const beam=1+0.95*Math.cos(az); br*=Math.max(0.22,beam*0.72); v=Math.min(1.3,br*1.5); }
+      const rg=Math.exp(-Math.pow((rs-Rh)/(Rh*0.17),2));
+      if(rg>0.05 && !(ny<-0.02 && rs<Rh*0.7)) v=Math.max(v, 0.62+0.5*rg);
+      if(rs<Rh && !(ny<0 && v>0.06)) continue;       // event horizon
+      if(v<0.12) continue;
+      const c=colTemp(Math.min(1,v)); ctx.globalAlpha=Math.min(1,0.4+0.6*v);
+      ctx.fillStyle=`rgb(${c[0]|0},${c[1]|0},${c[2]|0})`;
+      ctx.fillText(RAMP[Math.min(RAMP.length-1,(v*RAMP.length)|0)], gx*cw, gy*ch);
+    }}
+    ctx.globalAlpha=1;
+  }
+  return {static:false, resize, frame};
+}
+
+/* ===================== 1-BIT ISOMETRIC DIORAMA (static footer) ===================== */
+function drawMountains(canvas){
+  const {ctx,W,H}=setupCanvas(canvas); ctx.fillStyle="#07070b"; ctx.fillRect(0,0,W,H);
+  const B8=[[0,32,8,40,2,34,10,42],[48,16,56,24,50,18,58,26],[12,44,4,36,14,46,6,38],[60,28,52,20,62,30,54,22],
+            [3,35,11,43,1,33,9,41],[51,19,59,27,49,17,57,25],[15,47,7,39,13,45,5,37],[63,31,55,23,61,29,53,21]];
+  const gcx=W*0.50, gcy=H*0.70, gw=W*0.46, gh=H*0.30;
+  function inDiamond(x,y){ return Math.abs((x-gcx)/gw)+Math.abs((y-gcy)/gh) <= 1; }
+  const peaks=[ {x:0.30,base:0.56,w:0.085,h:0.40}, {x:0.42,base:0.55,w:0.06,h:0.26}, {x:0.62,base:0.58,w:0.11,h:0.50}, {x:0.73,base:0.56,w:0.07,h:0.30} ];
+  function peakBright(x,y){ let best=0;
+    for(const p of peaks){ const px=p.x*W, apex=(p.base-p.h)*H, baseY=p.base*H, half=p.w*W;
+      if(y>=apex&&y<=baseY){ const t=(y-apex)/(baseY-apex); const hw=half*t; if(Math.abs(x-px)<=hw){ const side=(x-px)/(hw+1); let b=0.95-0.5*Math.max(0,side); b*=(0.55+0.45*(1-t)); best=Math.max(best,b); } } }
+    return best; }
+  const trees=[ {cx:0.52,baseY:0.62,s:0.26}, {cx:0.38,baseY:0.74,s:0.10}, {cx:0.64,baseY:0.78,s:0.12}, {cx:0.46,baseY:0.82,s:0.08}, {cx:0.58,baseY:0.68,s:0.09} ];
+  function pineBright(x,y,cx,baseY,s){ const px=cx*W, by=baseY*H, top=by-s*H, hw=s*H*0.42;
+    if(x<px-hw-2||x>px+hw+2||y<top||y>by+2) return 0; let best=0;
+    const tiers=[[0.0,0.52,0.55],[0.34,0.74,0.78],[0.55,1.0,1.0]];
+    for(const tr of tiers){ const ta=top+(by-top)*tr[0], tb=top+(by-top)*tr[1], thw=hw*tr[2];
+      if(y>=ta&&y<=tb){ const t=(y-ta)/(tb-ta+1e-6); const w=thw*t; if(Math.abs(x-px)<=w){ const side=(x-px)/(w+1); best=Math.max(best,0.82-0.42*Math.max(0,side)); } } }
+    if(Math.abs(x-px)<2 && y>by-s*H*0.12 && y<=by) best=Math.max(best,0.4); return best; }
+  function treesBright(x,y){ let b=0; for(const tr of trees) b=Math.max(b,pineBright(x,y,tr.cx,tr.baseY,tr.s)); return b; }
+  function planeBright(x,y){ const ly=(y-(gcy-gh))/(2*gh); let b=0.30-0.10*ly;
+    const mx=gcx+gw*0.32, my=gcy-gh*0.05; const dm=Math.hypot((x-mx)/(gw*0.55),(y-my)/(gh*0.55)); b+=0.62*Math.max(0,1-dm);
+    const lx=gcx-gw*0.34, lyc=gcy+gh*0.40; const dl=Math.hypot((x-lx)/(gw*0.34),(y-lyc)/(gh*0.24));
+    if(dl<1){ b=0.07; const sp=Math.exp(-Math.pow((y-(lyc-2))/2.6,2)); b+=0.95*sp*(0.5+0.5*Math.sin(x*0.32)); }
+    return Math.max(0,Math.min(1,b)); }
+  const step=4;
+  for(let y=0;y<H;y+=step){ for(let x=0;x<W;x+=step){
+    const th=(B8[(y/step|0)%8][(x/step|0)%8]+0.5)/64;
+    const pk=peakBright(x,y), tr=treesBright(x,y); let b=Math.max(pk,tr);
+    if(b>0.001){ if(b>th){ const g=180+Math.round(b*70); ctx.fillStyle=`rgb(${g},${g},${g+4})`; ctx.fillRect(x,y,1.7,1.7); } continue; }
+    if(inDiamond(x,y)){ b=planeBright(x,y); if(b>th){ const g=150+Math.round(b*95); ctx.fillStyle=`rgb(${g-4},${g},${g+6})`; ctx.fillRect(x,y,1.6,1.6); } }
+    else { const horizon=gcy-gh; const near=Math.max(0,1-Math.abs(y-horizon)/(H*0.5)); const hsh=((x*73856093)^(y*19349663))>>>0; const p=2+near*5;
+      if((hsh%1000)<p){ const s=(hsh>>10)%3; ctx.fillStyle=s===0?"rgba(180,200,255,0.9)":"rgba(230,230,240,0.85)"; ctx.fillRect(x,y,1.4,1.4); } }
+  }}
+  ctx.globalCompositeOperation='lighter';
+  const g=ctx.createLinearGradient(0,gcy-gh,0,gcy-gh+H*0.18); g.addColorStop(0,'rgba(124,92,255,0.10)'); g.addColorStop(1,'rgba(124,92,255,0)');
+  ctx.fillStyle=g; ctx.fillRect(0,gcy-gh,W,H*0.18); ctx.globalCompositeOperation='source-over';
+}
+
+/* ===================== NAV LOGO: PIXEL LOTUS ===================== */
+function initLogo(){
+  const canvas=document.getElementById('logo'); if(!canvas) return;
+  const brand=document.getElementById('brand');
+  let ctx,W,H,raf=0,hover=false,t0=performance.now(),hStart=0,leaving=0;
+  const PET=[ {ang:-90,len:1.00,w:0.30}, {ang:-50,len:0.86,w:0.25}, {ang:-130,len:0.86,w:0.25}, {ang:-16,len:0.66,w:0.21}, {ang:-164,len:0.66,w:0.21} ];
+  function size(){ const s=setupCanvas(canvas); ctx=s.ctx;W=s.W;H=s.H; }
+  function petal(px,py,cx,by,R,bloom){ let best=0,idx=-1,a01=0;
+    for(let pi=0;pi<PET.length;pi++){ const p=PET[pi]; const a=p.ang*Math.PI/180; const dx=px-cx, dy=py-by;
+      const al=dx*Math.cos(a)+dy*Math.sin(a), pe=-dx*Math.sin(a)+dy*Math.cos(a);
+      const L=p.len*R*bloom, Wd=p.w*R; if(al>=0&&al<=L){ const hw=Wd*(1-(al/L)*0.8); if(Math.abs(pe)<=hw){ const cov=1-Math.abs(pe)/(hw+0.001); if(cov>best){ best=cov; idx=pi; a01=al/(p.len*R); } } } }
+    return {v:best, idx, a:a01};
+  }
+  function seedMask(px,py,cx,cy,R){ const ny=(py-cy)/R; if(ny<-0.78||ny>0.82) return 0;
+    const tt=(ny+0.78)/1.6; const taper=Math.sin(Math.PI*tt); const hw=R*0.30*taper*(0.55+0.45*tt);
+    return Math.abs(px-cx)<=hw ? 1-Math.abs(px-cx)/(hw+0.001) : 0;
+  }
+  function draw(now){
+    const t=(now-t0)/1000; ctx.clearRect(0,0,W,H);
+    const R=Math.min(W,H)*0.50, cx=W/2, cy=H*0.50, base=cy+R*0.16;
+    let bloom=0, alpha=1;
+    if(hover){ const e=Math.min(1,(now-hStart)/620); bloom=1-Math.pow(1-e,3); }
+    const pulse=hover?(1+0.05*Math.sin(t*5)):1;
+    const step=Math.max(1,Math.round(Math.min(W,H)/20));
+    // petals (bloom)
+    if(bloom>0.02){ for(let y=step/2;y<H;y+=step){ for(let x=step/2;x<W;x+=step){
+      const m=petal(x,y,cx,base,R*pulse,bloom); if(m.v<0.16) continue; const rr=m.a; let col;
+      if(rr<0.30) col=[255,216,120]; else if(rr<0.62) col=[255,140,196]; else col=[205,100,224];
+      const sh=0.82+0.18*Math.sin(t*4+m.idx); ctx.globalAlpha=Math.min(1,bloom*1.3*sh);
+      ctx.fillStyle=`rgb(${col[0]},${col[1]},${col[2]})`;
+      ctx.fillRect(Math.round(x-step/2), Math.round(y-step/2), Math.ceil(step), Math.ceil(step));
+    }}}
+    // seed (fades as it blooms), or gold heart at full bloom
+    const seedA=Math.max(0,1-bloom*1.7);
+    if(seedA>0.02){ for(let y=step/2;y<H;y+=step){ for(let x=step/2;x<W;x+=step){
+      const m=seedMask(x,y,cx,cy,R); if(m<0.16) continue; const g=18+Math.round((1-m)*22); ctx.globalAlpha=seedA;
+      ctx.fillStyle=`rgb(${g},${g},${g+4})`; ctx.fillRect(Math.round(x-step/2),Math.round(y-step/2),Math.ceil(step),Math.ceil(step));
+    }}}
+    if(bloom>0.55){ ctx.globalAlpha=(bloom-0.55)/0.45; ctx.fillStyle="#ffd86e";
+      ctx.beginPath(); ctx.arc(cx,base,R*0.16,0,Math.PI*2); ctx.fill(); }
+    ctx.globalAlpha=1;
+  }
+  function loop(now){ draw(now); if(hover) raf=requestAnimationFrame(loop); }
+  size(); draw(performance.now());
+  brand.addEventListener('mouseenter',()=>{ if(matchMedia('(prefers-reduced-motion: reduce)').matches){ hover=true; draw(performance.now()); hover=false; return; } hover=true; hStart=performance.now(); if(!raf) raf=requestAnimationFrame(loop); });
+  brand.addEventListener('mouseleave',()=>{ hover=false; if(raf){cancelAnimationFrame(raf); raf=0;} draw(performance.now()); });
+  window.addEventListener('resize',()=>{ size(); draw(performance.now()); });
+}
+
+/* ===================== NAV HOVER: COLOUR SCRAMBLE ===================== */
+function initScramble(){
+  const GL="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&@*<>/\\=+".split("");
+  const COL=["#5b6cff","#7b5cff","#a15cff","#d65cff","#4cd6ff"];
+  document.querySelectorAll('[data-scr]').forEach(el=>{
+    const text=el.textContent.trim(); el.dataset.label=text; let timer=null, frame=0;
+    function stop(){ if(timer){clearInterval(timer); timer=null;} el.textContent=el.dataset.label; }
+    el.addEventListener('mouseenter',()=>{
+      if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if(timer) clearInterval(timer); frame=0; const len=text.length;
+      timer=setInterval(()=>{ frame++; const rev=Math.floor(frame/2); let html='';
+        for(let i=0;i<len;i++){ if(i<rev){ html+=`<span style="color:var(--ink)">${text[i]}</span>`; }
+          else { const c=COL[(Math.random()*COL.length)|0]; const g=GL[(Math.random()*GL.length)|0]; html+=`<span style="color:${c}">${g}</span>`; } }
+        el.innerHTML=html; if(rev>=len){ clearInterval(timer); timer=null; el.textContent=el.dataset.label; }
+      },34);
+    });
+    el.addEventListener('mouseleave', stop);
+    el.addEventListener('pointerup', (e)=>{ if(e.button&&e.button!==0) return; const href=el.getAttribute('href'); if(href){ if(timer){clearInterval(timer);timer=null;} location.hash=href; } });
+  });
+}
+
+/* ===================== ANIMATION MOUNTING ===================== */
+function gateAnim(canvas, ctrl){
+  let raf=0, playing=false, alive=true; const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function loop(now){ if(!playing||!alive)return; ctrl.frame(now||performance.now()); if(!reduced) raf=requestAnimationFrame(loop); }
+  function play(){ if(playing||!alive)return; playing=true; if(reduced){ ctrl.frame(performance.now()); playing=false; } else raf=requestAnimationFrame(loop); }
+  function pause(){ playing=false; if(raf)cancelAnimationFrame(raf); raf=0; }
+  const io=new IntersectionObserver(es=>{ es.forEach(e=> e.isIntersecting?play():pause()); }, {threshold:0.04});
+  io.observe(canvas);
+  const onR=()=>{ ctrl.resize(); if(reduced) ctrl.frame(performance.now()); };
+  window.addEventListener('resize', onR); ctrl.resize();
+  return { stop(){ alive=false; pause(); io.disconnect(); window.removeEventListener('resize',onR); } };
+}
+
+/* ============================== ROUTER ============================== */
+const app=document.getElementById('app');
+const linkEls=[...document.querySelectorAll('.navlinks a[data-route]')];
+let auxAnims=[];
+function stopAux(){ auxAnims.forEach(a=> a&&a.stop&&a.stop()); auxAnims=[]; }
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function tagRow(tags){ return `<div class="tags">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>`; }
+
+function viewHome(){
+  return `
+  <div class="page-enter">
+    <section class="hero" id="hero">
+      <canvas id="fluid" aria-hidden="true"></canvas>
+      <div class="hero-clear"></div>
+      <div class="hero-glow"></div>
+      <div class="hero-center">
+        <h1 class="hero-name">Ali Ashrafy</h1>
+        <p class="hero-sub">Med student &middot; engineer &middot; researcher. Building high-performance robotic actuators at Phase.</p>
+      </div>
+      <div class="hero-hint">move to stir &middot; click to burst <span class="blink">_</span></div>
+    </section>
+    <div class="home-strip">
+      <div class="home-grid">
+        <a href="#/about"><div class="k">001 &mdash; who</div><div class="v">About <span class="arr">&rarr;</span></div><p>Medicine and machines, run in parallel. The short version of what I do and why.</p></a>
+        <a href="#/projects"><div class="k">002 &mdash; built</div><div class="v">Projects <span class="arr">&rarr;</span></div><p>Motor drivers, haptics, biopotential hardware. The actuator stack, in pieces.</p></a>
+        <a href="#/posts"><div class="k">003 &mdash; writing</div><div class="v">Posts <span class="arr">&rarr;</span></div><p>Notes on robotics, motors and why the body is the bottleneck.</p></a>
+      </div>
+    </div>
+  </div>`;
+}
+
+function viewAbout(){
+  return `
+  <div class="wrap page-enter">
+    <p class="eyebrow">001 &mdash; About</p>
+    <h1 class="title">Medicine and machines,<br>run in parallel.</h1>
+    <div class="prose">
+      <p class="lede">I'm Ali &mdash; a medical student who builds robots in the other half of the day. The two aren't a contradiction to me; they're the same instinct pointed at the same place: bodies, and how to repair and extend them.</p>
+      <p>By day I'm in the BMedSci/MD program at UNSW. The rest of the time I'm the founder of <strong>Phase Robotics</strong>, where I'm building the actuator stack &mdash; motors, drivers, gearboxes and the firmware that ties them together &mdash; because the part most robots are missing is the one nobody sells.</p>
+      <p>On the research side I work on machine learning for clinical prediction &mdash; most recently a model for estimating rotator-cuff retear risk from a long-running surgical registry. I like problems that sit on the seam between the clinic and the workshop, where a better sensor or a better model changes what's possible to do to a person, safely.</p>
+    </div>
+    <div class="hr"></div>
+    <p class="eyebrow">Where I've worked</p>
+    <div class="about-grid">
+      <div class="rk">Founder</div><div class="rv"><b>Phase Robotics</b> &mdash; high-performance robotic actuators, vertically integrated. The long arc points at autonomous surgical robotics.</div>
+      <div class="rk">Software</div><div class="rv"><b>Redback Racing</b> &mdash; Formula Student. Autonomous path-planning and perception for the driverless platform.</div>
+      <div class="rk">Software</div><div class="rv"><b>BlueSat UNSW</b> &mdash; student satellite and space-systems team. Software contributor.</div>
+      <div class="rk">Research</div><div class="rv"><b>Clinical ML</b> &mdash; predictive modelling on surgical outcomes; first-author work in progress.</div>
+    </div>
+    <div class="hr"></div>
+    <div class="prose">
+      <p>I think in terms of optionality and compounding &mdash; building things with real ownership rather than slotting into someone else's pathway. Outside the lab you'll find me in the water, at the wall (bouldering), or chasing my pilot's licence. I read widely; lately a lot of engineering history and Stoic philosophy.</p>
+      <p class="meta">Reach me on <a class="lnk" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>, <a class="lnk" href="https://x.com/" target="_blank" rel="noopener">X</a> or <a class="lnk" href="https://github.com/alislaboratory" target="_blank" rel="noopener">GitHub</a>.</p>
+    </div>
+    <figure class="bhole-fig"><canvas id="bhole" aria-hidden="true"></canvas><figcaption class="bhole-cap">// still pointed at the hard problems</figcaption></figure>
+  </div>`;
+}
+
+function viewProjects(){
+  const items=PROJECTS.map((p,idx)=>`
+    <a class="proj-card" href="#/projects/${p.slug}">
+      <canvas class="proj-thumb" data-art="${idx*2.3+1.7}"></canvas>
+      <div class="proj-body">
+        <div class="pname">${esc(p.name)} <span class="arr">&rarr;</span></div>
+        <div class="pstack">${esc(p.stack)}</div>
+        <div class="status ${p.live?'live':''}"><span class="led"></span>${esc(p.status)}</div>
+      </div>
+    </a>`).join('');
+  return `
+  <div class="wrap wide page-enter">
+    <p class="eyebrow">002 &mdash; Projects</p>
+    <h1 class="title">The actuator stack, in pieces.</h1>
+    <div class="thermal"><canvas id="thermal" aria-hidden="true"></canvas><div class="lbl">// thermal &mdash; heat is every actuator's enemy</div></div>
+    <div class="prose"><p class="lede" style="margin-bottom:14px;">Each of these is one layer of the same problem &mdash; putting controllable, affordable torque into the world. A few are open; some live behind Phase.</p></div>
+    <div class="proj-list">${items}</div>
+  </div>`;
+}
+
+function viewProject(slug){
+  const idx=PROJECTS.findIndex(x=>x.slug===slug); if(idx<0) return viewNotFound(); const p=PROJECTS[idx];
+  return `
+  <div class="wrap page-enter">
+    <a class="backlink" href="#/projects">&larr; all projects</a>
+    <p class="eyebrow">Project</p>
+    <h1 class="title">${esc(p.name)}</h1>
+    <div class="pstack" style="margin-bottom:6px;">${esc(p.stack)}</div>
+    <canvas class="proj-banner" data-art="${idx*2.3+1.7}"></canvas>
+    <div class="prose"><p class="lede">${esc(p.desc)}</p></div>
+    <div class="hr"></div>
+    <div class="about-grid">
+      <div class="rk">Status</div><div class="rv">${esc(p.status)}</div>
+      <div class="rk">Stack</div><div class="rv">${esc(p.stack)}</div>
+      <div class="rk">Source</div><div class="rv">${p.repo?`<a class="lnk" href="${p.repo}" target="_blank" rel="noopener">${esc(p.repo.replace('https://',''))} &#8599;</a>`:`Internal to Phase Robotics &mdash; not public.`}</div>
+    </div>
+    <p class="meta" style="margin-top:24px;">The image above is placeholder generative pixel art &mdash; renders/photos to come.</p>
+    <div class="hr"></div>
+    <a class="backlink" href="#/projects" style="margin:0">&larr; all projects</a>
+  </div>`;
+}
+
+function viewPosts(){
+  const items=POSTS.map(p=>`
+    <a class="postitem" href="#/posts/${p.slug}">
+      <canvas class="pi-banner" ${p.art?`data-postart="${p.art}"`:`data-seed="${p.seed}"`}></canvas>
+      <h2 class="pi-title" style="margin:0">${esc(p.title)}</h2>
+      <p class="pi-dek">${esc(p.dek)}</p>
+      <div class="pi-foot">${tagRow(p.tags)}<span class="meta">${esc(p.date)}</span></div>
+    </a>`).join('');
+  return `
+  <div class="wrap wide page-enter postlist">
+    <p class="eyebrow">003 &mdash; Posts</p>
+    <h1 class="title">Notes on the bottleneck.</h1>
+    <div class="prose"><p class="lede" style="margin-bottom:30px;">Writing about why the body &mdash; not the brain &mdash; is the hard part of robotics, and the motors that gate the whole thing.</p></div>
+    ${items}
+  </div>`;
+}
+
+function viewPost(slug){
+  const p=POSTS.find(x=>x.slug===slug); if(!p) return viewNotFound();
+  return `
+  <div class="wrap page-enter">
+    <a class="backlink" href="#/posts">&larr; all posts</a>
+    <p class="eyebrow">${esc(p.date)}</p>
+    <h1 class="title">${esc(p.title)}</h1>
+    <p class="pi-dek" style="margin-bottom:22px;">${esc(p.dek)}</p>
+    <div class="pi-foot" style="margin-bottom:28px;">${tagRow(p.tags)}</div>
+    <canvas class="post-banner" ${p.art?`data-postart="${p.art}"`:`data-seed="${p.seed}"`}></canvas>
+    <div class="post-body">${p.body}</div>
+    <div class="hr"></div>
+    <a class="backlink" href="#/posts" style="margin:0">&larr; all posts</a>
+  </div>`;
+}
+
+function viewNotFound(){ return `<div class="wrap page-enter"><p class="eyebrow">404</p><h1 class="title">Nothing here.</h1><div class="prose"><p>That page got advected out of the grid. <a class="lnk" href="#/">Back home &rarr;</a></p></div></div>`; }
+
+function paintBanners(){ document.querySelectorAll('canvas[data-seed]').forEach(c=> drawHalftone(c, parseFloat(c.dataset.seed))); }
+function setActive(route){ linkEls.forEach(a=> a.classList.toggle('active', a.dataset.route===route)); }
+
+function render(){
+  Fluid.stop(); stopAux();
+  const hash=location.hash.replace(/^#/,'')||'/'; const parts=hash.split('/').filter(Boolean);
+  let html, route='';
+  if(parts.length===0){ html=viewHome(); }
+  else if(parts[0]==='about'){ html=viewAbout(); route='about'; }
+  else if(parts[0]==='projects' && parts[1]){ html=viewProject(parts[1]); route='projects'; }
+  else if(parts[0]==='projects'){ html=viewProjects(); route='projects'; }
+  else if(parts[0]==='posts' && parts[1]){ html=viewPost(parts[1]); route='posts'; }
+  else if(parts[0]==='posts'){ html=viewPosts(); route='posts'; }
+  else { html=viewNotFound(); }
+  app.innerHTML=html; setActive(route); window.scrollTo(0,0);
+  if(parts.length===0){ const hero=document.getElementById('hero'), fc=document.getElementById('fluid'); if(hero&&fc) Fluid.start(hero,fc); }
+  requestAnimationFrame(()=>{
+    document.querySelectorAll('canvas[data-seed]').forEach(c=> auxAnims.push(gateAnim(c, createBanner(c, parseFloat(c.dataset.seed)))));
+    document.querySelectorAll('canvas[data-art]').forEach(c=> auxAnims.push(gateAnim(c, createPixelArt(c, parseFloat(c.dataset.art)))));
+    document.querySelectorAll('canvas[data-postart]').forEach(c=>{ const ty=c.dataset.postart;
+      const f = ty==='motor'?createMotorArt : ty==='helix'?createHelixArt : ty==='life'?createLifeArt : (cv=>createPixelArt(cv,3));
+      auxAnims.push(gateAnim(c, f(c))); });
+    const th=document.getElementById('thermal'); if(th) auxAnims.push(gateAnim(th, createThermal(th)));
+    const bh=document.getElementById('bhole'); if(bh) auxAnims.push(gateAnim(bh, createBlackHoleAscii(bh)));
+    Footer.set(parts.length===0 ? 'home' : 'other');
+  });
+}
+
+let footTO=0;
+const Footer = (() => {
+  let canvas, mode='other', ctx, W=0, H=0, base=null, raf=0, egg=null, aq=null, aqGate=null, wired=false;
+  function reduced(){ return matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  function ensure(){ canvas=document.querySelector('.foot-art'); return !!canvas; }
+  function clearAll(){ if(aqGate){ aqGate.stop(); aqGate=null; } aq=null; if(raf){ cancelAnimationFrame(raf); raf=0; } egg=null; }
+  function set(m){ if(!ensure()) return; clearAll(); mode=m;
+    if(!wired){ wired=true; canvas.style.cursor='pointer'; canvas.addEventListener('click', onClick); }
+    if(m==='home'){ aq=createAquarium(canvas); aqGate=gateAnim(canvas, aq); }
+    else { paintMountain(); }
+  }
+  function paintMountain(){ drawMountains(canvas); ctx=canvas.getContext('2d'); const r=canvas.getBoundingClientRect(); W=r.width; H=r.height; base=ctx.getImageData(0,0,canvas.width,canvas.height); }
+  function onResize(){ if(!canvas) return; if(mode==='other') paintMountain(); }
+  function onClick(e){ const r=canvas.getBoundingClientRect(); const x=e.clientX-r.left, y=e.clientY-r.top;
+    if(mode==='home'){ if(aq&&aq.feed) aq.feed(x,y); } else { launchRocket(); } }
+  function launchRocket(){ if(egg||!base||reduced()) return; ctx=canvas.getContext('2d'); egg={ t0:performance.now(), sparks:[], lit:false }; raf=requestAnimationFrame(tick); }
+  function tick(now){
+    if(!egg||mode!=='other') return; const e=now-egg.t0; const ASC=1500, BUR=1300;
+    ctx.putImageData(base,0,0);
+    const lx=W*0.52, ly=H*0.60, ax=W*0.47, ay=H*0.13;
+    if(e<ASC){
+      const p=e/ASC, ep=1-(1-p)*(1-p);
+      const x=lx+(ax-lx)*ep+Math.sin(p*7)*7, y=ly+(ay-ly)*ep;
+      for(let k=0;k<9;k++){ const ty=y+8+k*5*(1+p); const a=(1-k/9)*0.9*(0.6+0.4*Math.sin(now*0.03+k));
+        ctx.fillStyle=`rgba(255,${190-k*16},60,${a})`; ctx.fillRect(x-1.5+Math.sin(k+now*0.02)*2, ty, 3, 4); }
+      ctx.fillStyle="#fff"; ctx.fillRect(x-2,y-7,4,9); ctx.fillStyle="#bcd2ff"; ctx.fillRect(x-2,y-7,4,3);
+    } else if(e<ASC+BUR){
+      if(!egg.lit){ egg.lit=true; for(let i=0;i<30;i++){ const a=Math.random()*Math.PI*2, sp=50+Math.random()*150;
+        egg.sparks.push({vx:Math.cos(a)*sp, vy:Math.sin(a)*sp, c:spectrum(Math.random())}); } }
+      const be=(e-ASC)/1000, life=1-(e-ASC)/BUR;
+      const gg=ctx.createRadialGradient(ax,ay,0,ax,ay,160); gg.addColorStop(0,`rgba(160,120,255,${0.30*life})`); gg.addColorStop(1,"rgba(160,120,255,0)");
+      ctx.fillStyle=gg; ctx.fillRect(ax-160,ay-160,320,320);
+      ctx.globalAlpha=Math.max(0,life);
+      for(const s of egg.sparks){ const px=ax+s.vx*be, py=ay+s.vy*be+46*be*be; ctx.fillStyle=s.c; ctx.fillRect(px,py,2.6,2.6); }
+      ctx.globalAlpha=1;
+    } else { ctx.putImageData(base,0,0); egg=null; return; }
+    raf=requestAnimationFrame(tick);
+  }
+  return { set, onResize };
+})();
+window.addEventListener('resize', ()=>{ clearTimeout(footTO); footTO=setTimeout(()=>{ Footer.onResize(); },200); });
+window.addEventListener('hashchange', render);
+initLogo(); initScramble();
+render();
+</script>
+</body>
+</html>
