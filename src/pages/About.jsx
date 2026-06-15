@@ -4,7 +4,7 @@ export default function About() {
   return (
     <div className="wrap page-enter">
       <p className="eyebrow">001 &mdash; About</p>
-      <h1 className="title">Medicine and machines,<br />run in parallel.</h1>
+      <h1 className="title">About me.</h1>
       <div className="prose">
         <p className="lede">I'm Ali &mdash; a medical student who builds robots in the other half of the day. The two aren't a contradiction to me; they're the same instinct pointed at the same place: bodies, and how to repair and extend them.</p>
         <p>By day I'm in the BMedSci/MD program at UNSW. The rest of the time I'm the founder of <strong>Phase Robotics</strong>, where I'm building the actuator stack &mdash; motors, drivers, gearboxes and the firmware that ties them together &mdash; because the part most robots are missing is the one nobody sells.</p>

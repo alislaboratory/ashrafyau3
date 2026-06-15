@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { createAquarium, drawMountains } from '../lib/art';
 import { spectrum } from '../lib/utils';
 import { gateAnim } from '../lib/gateAnim';
@@ -159,7 +159,11 @@ export default function Footer() {
       />
       <div className="foot-in">
         <div>
-          <div className="fbrand">ali_laboratory</div>
+          <div className="fbrand">
+            <Link to="/lab" className="lab-link" title="enter the lab">
+              ali_laboratory<span className="lab-link-arr">&#8599;</span>
+            </Link>
+          </div>
           <div className="fmeta">Sydney &middot; building actuators &middot; &copy; 2026</div>
         </div>
         <div className="foot-soc">

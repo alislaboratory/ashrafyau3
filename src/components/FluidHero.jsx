@@ -21,7 +21,7 @@ export default function FluidHero() {
       <div className="hero-center">
         <h1 className="hero-name">Ali Ashrafy</h1>
         <p className="hero-sub">
-          Med student &middot; engineer &middot; researcher. Building high-performance robotic actuators at Phase.
+          Med student &middot; engineer &middot; researcher. Building robots.
         </p>
       </div>
       <div className="hero-hint">

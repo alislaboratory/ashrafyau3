@@ -1,10 +1,11 @@
 import { Link, useParams } from 'react-router-dom';
-import { PROJECTS } from '../lib/content';
-import CanvasAnim from '../components/CanvasAnim';
+import { useProjects } from '../lib/store';
+import Banner from '../components/Banner';
 import NotFound from './NotFound';
 
 export default function ProjectDetail() {
   const { slug } = useParams();
+  const PROJECTS = useProjects();
   const idx = PROJECTS.findIndex(x => x.slug === slug);
   if (idx < 0) return <NotFound />;
   const p = PROJECTS[idx];
@@ -15,7 +16,7 @@ export default function ProjectDetail() {
       <p className="eyebrow">Project</p>
       <h1 className="title">{p.name}</h1>
       <div className="pstack" style={{ marginBottom: 6 }}>{p.stack}</div>
-      <CanvasAnim kind="art" seed={idx * 2.3 + 1.7} className="proj-banner" />
+      <Banner item={p} fallbackSeed={idx * 2.3 + 1.7} fallbackKind="art" className="proj-banner" />
       <div className="prose"><p className="lede">{p.desc}</p></div>
       <div className="hr" />
       <div className="about-grid">
@@ -30,9 +31,11 @@ export default function ProjectDetail() {
           ) : 'Internal to Phase Robotics &mdash; not public.'}
         </div>
       </div>
-      <p className="meta" style={{ marginTop: 24 }}>
-        The image above is placeholder generative pixel art &mdash; renders/photos to come.
-      </p>
+      {!p.image && !p.art && (
+        <p className="meta" style={{ marginTop: 24 }}>
+          The image above is placeholder generative pixel art &mdash; renders/photos to come.
+        </p>
+      )}
       <div className="hr" />
       <Link className="backlink" to="/projects" style={{ margin: 0 }}>&larr; all projects</Link>
     </div>
