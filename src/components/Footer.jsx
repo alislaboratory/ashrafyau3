@@ -167,10 +167,10 @@ export default function Footer() {
           <div className="fmeta">Sydney &middot; building actuators &middot; &copy; 2026</div>
         </div>
         <div className="foot-soc">
-          <a href="https://github.com/alislaboratory" target="_blank" rel="noopener">GitHub</a>
-          <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="https://x.com/" target="_blank" rel="noopener">X</a>
-          <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://github.com/alislaboratory" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://www.linkedin.com/in/ali-ashrafy-711a6a295/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://x.com/maciint0sh" target="_blank" rel="noopener noreferrer">X</a>
+          <a href="https://www.instagram.com/alibuildsthings/reels/" target="_blank" rel="noopener noreferrer">Instagram</a>
         </div>
       </div>
     </footer>

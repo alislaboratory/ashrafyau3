@@ -21,7 +21,7 @@ export default function About() {
       <div className="hr" />
       <div className="prose">
         <p>I think in terms of optionality and compounding &mdash; building things with real ownership rather than slotting into someone else's pathway. Outside the lab you'll find me in the water, at the wall (bouldering), or chasing my pilot's licence. I read widely; lately a lot of engineering history and Stoic philosophy.</p>
-        <p className="meta">Reach me on <a className="lnk" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>, <a className="lnk" href="https://x.com/" target="_blank" rel="noopener">X</a> or <a className="lnk" href="https://github.com/alislaboratory" target="_blank" rel="noopener">GitHub</a>.</p>
+        <p className="meta">Reach me on <a className="lnk" href="https://www.linkedin.com/in/ali-ashrafy-711a6a295/" target="_blank" rel="noopener noreferrer">LinkedIn</a>, <a className="lnk" href="https://x.com/maciint0sh" target="_blank" rel="noopener noreferrer">X</a>, <a className="lnk" href="https://github.com/alislaboratory" target="_blank" rel="noopener noreferrer">GitHub</a>, or <a className="lnk" href="https://www.instagram.com/alibuildsthings/reels/" target="_blank" rel="noopener noreferrer">Instagram</a>.</p>
       </div>
       <figure className="bhole-fig">
         <CanvasAnim kind="blackhole" id="bhole" />
